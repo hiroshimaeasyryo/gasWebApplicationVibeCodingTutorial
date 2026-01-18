@@ -446,6 +446,7 @@ body {
     white-space: pre;
 }
 
+/* Prism.jsとの互換性のため、既存のカスタムクラスも維持 */
 .code-block .comment {
     color: #607D8B;
 }
@@ -460,6 +461,28 @@ body {
 
 .code-block .function {
     color: #82AAFF;
+}
+
+/* Prism.jsのスタイル調整 */
+.code-block code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+/* Prism.jsが適用されたコードブロックのスタイル */
+pre.code-block {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre.code-block code {
+    display: block;
+    white-space: pre;
+    overflow-x: auto;
 }
 
 ul, ol {

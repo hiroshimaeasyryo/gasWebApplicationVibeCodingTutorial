@@ -8,6 +8,8 @@
     <!-- Material Design CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Prism.js シンタックスハイライト -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -155,7 +157,7 @@
 
             <div class="card">
                 <h4>マッチングアプリの例</h4>
-                <div class="code-block">&lt;div class="user-card"&gt;
+                <div class="code-block language-html">&lt;div class="user-card"&gt;
   &lt;img src="profile.jpg" alt="プロフィール写真"&gt;
   &lt;h2&gt;田中 太郎&lt;/h2&gt;
   &lt;p&gt;26歳 / 東京都&lt;/p&gt;
@@ -181,7 +183,7 @@
 
             <div class="card">
                 <h4>同じHTMLにCSSを適用すると</h4>
-                <div class="code-block">.user-card {
+                <div class="code-block language-css">.user-card {
   border-radius: 20px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 24px;
@@ -218,124 +220,90 @@
 
             <div class="card">
                 <h4>マッチングアプリの例</h4>
-                <div class="code-block">// いいねボタンを押したときの処理
+                <div class="code-block language-javascript">// いいねボタンを押したときの処理
 document.querySelector('.like-btn').addEventListener('click', function() {
-  const userId = this.getAttribute('data-user-id');
   const btn = this;
   
-  // 🎨 豪華なアニメーション効果
-  // 1. パルスアニメーション（波紋効果）
-  createPulseEffect(btn);
+  // 🎨 1. ボタンの色をピンクに変更（瞬時に変化）
+  btn.style.backgroundColor = '#FF4081';
+  btn.style.color = 'white';
   
-  // 2. ボタンのスケールアニメーション
-  btn.style.transform = 'scale(0.9)';
-  setTimeout(() => {
-    btn.style.transform = 'scale(1.1)';
-    btn.style.transition = 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-  }, 100);
+  // ✨ 2. ボタンを1.2倍に拡大（0.3秒かけて）
+  btn.style.transform = 'scale(1.2)';
+  btn.style.transition = 'all 0.3s ease';
   
-  // 3. ハートのパーティクル効果
-  createHeartParticles(btn);
-  
-  // 4. メッセージ送付モーダルを表示
-  showMessageModal(userId);
-  
-  // サーバー(GAS)にデータを送信
-  google.script.run
-    .withSuccessHandler(handleLikeSuccess)
-    .withFailureHandler(handleError)
-    .sendLike(userId);
-});
-
-// 💬 メッセージ送付モーダル（フェードイン + スライドアップ）
-function showMessageModal(userId) {
-  const modal = document.createElement('div');
-  modal.className = 'message-modal';
-  modal.innerHTML = `
-    &lt;div class="modal-content"&gt;
-      &lt;div class="modal-header"&gt;
-        &lt;h3&gt;💌 メッセージを送りましょう&lt;/h3&gt;
-        &lt;button class="close-btn"&gt;&amp;times;&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;textarea 
-        class="message-input" 
-        placeholder="最初のメッセージを入力してください..."
-        rows="4"&gt;&lt;/textarea&gt;
-      &lt;div class="modal-actions"&gt;
-        &lt;button class="send-btn" onclick="sendMessage('${userId}')"&gt;
-          &lt;span class="material-icons"&gt;send&lt;/span&gt;送信
-        &lt;/button&gt;
-        &lt;button class="cancel-btn" onclick="closeModal()"&gt;キャンセル&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  `;
-  
-  document.body.appendChild(modal);
-  
-  // アニメーション: フェードイン + スライドアップ
-  setTimeout(() => {
-    modal.classList.add('show');
-  }, 10);
-}
-
-// ✨ パルス効果（波紋アニメーション）
-function createPulseEffect(element) {
-  const pulse = document.createElement('div');
-  pulse.className = 'pulse-effect';
-  const rect = element.getBoundingClientRect();
-  pulse.style.left = rect.left + rect.width / 2 + 'px';
-  pulse.style.top = rect.top + rect.height / 2 + 'px';
-  document.body.appendChild(pulse);
-  
-  setTimeout(() => pulse.remove(), 1000);
-}
-
-// ❤️ ハートのパーティクル効果
-function createHeartParticles(element) {
-  for (let i = 0; i < 5; i++) {
-    const heart = document.createElement('div');
+  // 💫 3. ハートの絵文字を画面に飛び散らせる
+  for (let i = 0; i < 10; i++) {
+    const heart = document.createElement('span');
     heart.textContent = '❤️';
-    heart.className = 'heart-particle';
-    heart.style.left = element.offsetLeft + 'px';
-    heart.style.top = element.offsetTop + 'px';
-    heart.style.animationDelay = (i * 0.1) + 's';
+    heart.style.position = 'fixed';
+    heart.style.left = btn.offsetLeft + 'px';
+    heart.style.top = btn.offsetTop + 'px';
+    heart.style.fontSize = '24px';
+    heart.style.pointerEvents = 'none';
+    heart.style.zIndex = '9999';
+    
+    // ランダムな方向に飛ばす
+    const angle = (Math.PI * 2 * i) / 10;
+    const distance = 100 + Math.random() * 50;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+    
     document.body.appendChild(heart);
     
-    setTimeout(() => heart.remove(), 2000);
+    // アニメーション実行
+    setTimeout(() => {
+      heart.style.transform = `translate(${x}px, ${y}px) rotate(360deg)`;
+      heart.style.opacity = '0';
+      heart.style.transition = 'all 1s ease-out';
+      
+      // 1秒後に削除
+      setTimeout(() => heart.remove(), 1000);
+    }, 10);
   }
-}
-
-// 🎉 マッチング成功時の豪華な演出
-function handleLikeSuccess(result) {
-  if (result.matched) {
-    // マッチング成立！豪華な演出
-    showMatchAnimation(result.userName);
-    playConfettiAnimation();
-    showMatchModal(result.userName);
-  } else {
-    showToast('いいねを送りました！', 'success');
-  }
-}
-
-// 🎊 マッチングアニメーション
-function showMatchAnimation(userName) {
-  const overlay = document.createElement('div');
-  overlay.className = 'match-overlay';
-  overlay.innerHTML = `
-    &lt;div class="match-content"&gt;
-      &lt;div class="match-icon"&gt;💑&lt;/div&gt;
-      &lt;h2&gt;マッチング成立！&lt;/h2&gt;
-      &lt;p&gt;${userName}さんとマッチしました！&lt;/p&gt;
-      &lt;div class="celebration"&gt;🎉🎊✨&lt;/div&gt;
-    &lt;/div&gt;
-  `;
-  document.body.appendChild(overlay);
   
-  setTimeout(() => overlay.classList.add('show'), 10);
-}</div>
+  // 🌈 4. 背景色をグラデーションに変更（0.5秒かけて）
+  document.body.style.background = 
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+  document.body.style.transition = 'background 0.5s ease';
+  
+  // 🔄 5. ボタンを回転させる（360度回転）
+  btn.style.transform = 'scale(1.2) rotate(360deg)';
+  
+  // ⏱️ 6. 0.5秒後に元のサイズに戻す
+  setTimeout(() => {
+    btn.style.transform = 'scale(1) rotate(0deg)';
+    btn.textContent = '❤️ いいね済み！';
+  }, 500);
+  
+  // 🎉 7. 成功メッセージを表示（フェードイン）
+  const message = document.createElement('div');
+  message.textContent = '🎉 いいねを送りました！';
+  message.style.position = 'fixed';
+  message.style.top = '50%';
+  message.style.left = '50%';
+  message.style.transform = 'translate(-50%, -50%)';
+  message.style.fontSize = '32px';
+  message.style.color = 'white';
+  message.style.fontWeight = 'bold';
+  message.style.opacity = '0';
+  message.style.transition = 'opacity 0.5s ease';
+  message.style.zIndex = '10000';
+  document.body.appendChild(message);
+  
+  setTimeout(() => {
+    message.style.opacity = '1';
+  }, 10);
+  
+  // 3秒後にメッセージを消す
+  setTimeout(() => {
+    message.style.opacity = '0';
+    setTimeout(() => message.remove(), 500);
+  }, 3000);
+});</div>
             </div>
 
-            <p>ボタンクリック → アニメーション → サーバーに送信 → マッチング判定 → 結果表示、という<strong>一連の流れ</strong>を制御できます。</p>
+            <p>ボタンクリック → <span class="highlight">色が変わる</span> → <span class="highlight">大きくなる</span> → <span class="highlight">ハートが飛び散る</span> → <span class="highlight">背景が変わる</span> → <span class="highlight">回転する</span> → <span class="highlight">メッセージ表示</span>、という<strong>一連の視覚的な効果</strong>をJavaScriptで制御できます。</p>
 
             <h4>2.3.1. JavaScript以外のプログラミング言語とは</h4>
             
@@ -411,14 +379,14 @@ function showMatchAnimation(userName) {
             <div class="comparison">
                 <div class="comparison-item before">
                     <h4>これまでやってきたこと</h4>
-                    <div class="code-block">function onEdit(e) {
+                    <div class="code-block language-javascript">function onEdit(e) {
   const sheet = e.source.getActiveSheet();
   // スプレッドシート操作
 }</div>
                 </div>
                 <div class="comparison-item after">
                     <h4>これからやること（Webアプリ）</h4>
-                    <div class="code-block">function doGet() {
+                    <div class="code-block language-javascript">function doGet() {
   return HtmlService
     .createHtmlOutputFromFile('index')
     .setTitle('マッチングアプリ');
@@ -500,7 +468,7 @@ function sendLike(targetUserId) {
                 </ol>
             </div>
 
-            <div class="code-block"><span class="comment">// Code.gs - バックエンド</span>
+            <div class="code-block language-javascript"><span class="comment">// Code.gs - バックエンド</span>
 
 <span class="comment">// Webページを配信</span>
 <span class="keyword">function</span> <span class="function">doGet</span>() {
@@ -563,7 +531,7 @@ function sendLike(targetUserId) {
                 </ol>
             </div>
 
-            <div class="code-block"><span class="comment">&lt;!-- index.html内のscript --&gt;</span>
+            <div class="code-block language-javascript"><span class="comment">&lt;!-- index.html内のscript --&gt;</span>
 <span class="keyword">&lt;script&gt;</span>
 <span class="comment">// いいねボタンクリック時の処理</span>
 <span class="keyword">function</span> <span class="function">handleLike</span>(userId) {
@@ -1483,7 +1451,7 @@ GitHub Issue #5:
 ラベル: feature, high-priority</div>
 
                 <h5>ステップ2: ブランチ作成</h5>
-                <div class="code-block"><span class="comment"># 最新のmainを取得</span>
+                <div class="code-block language-bash"><span class="comment"># 最新のmainを取得</span>
 git pull origin main
 
 <span class="comment"># 新しいブランチを作成</span>
@@ -1505,7 +1473,7 @@ git checkout -b feature/user-register</div>
                 </div>
 
                 <h5>ステップ3: コード実装</h5>
-                <div class="code-block"><span class="comment">&lt;!-- index.html --&gt;</span>
+                <div class="code-block language-html"><span class="comment">&lt;!-- index.html --&gt;</span>
 <span class="keyword">&lt;div</span> <span class="string">class="register-form"</span><span class="keyword">&gt;</span>
   <span class="keyword">&lt;h2&gt;</span>ユーザー登録<span class="keyword">&lt;/h2&gt;</span>
   <span class="keyword">&lt;input</span> <span class="string">type="text"</span> <span class="string">id="name"</span> <span class="string">placeholder="名前"</span> <span class="string">required</span><span class="keyword">&gt;</span>
@@ -1534,7 +1502,7 @@ git checkout -b feature/user-register</div>
 }
 <span class="keyword">&lt;/script&gt;</span></div>
 
-                <div class="code-block"><span class="comment">// Code.gs</span>
+                <div class="code-block language-javascript"><span class="comment">// Code.gs</span>
 <span class="keyword">function</span> <span class="function">registerUser</span>(data) {
   <span class="comment">// 入力チェック</span>
   <span class="keyword">if</span> (!data.name || !data.email || !data.age || !data.gender) {
@@ -1557,7 +1525,7 @@ git checkout -b feature/user-register</div>
 }</div>
 
                 <h5>ステップ4: Commit</h5>
-                <div class="code-block"><span class="comment"># 変更ファイルを確認</span>
+                <div class="code-block language-bash"><span class="comment"># 変更ファイルを確認</span>
 git status
 
 <span class="comment"># ファイルをステージング</span>
@@ -1583,7 +1551,7 @@ git commit -m "ユーザー登録機能を実装 #5"</div>
                 </div>
 
                 <h5>ステップ5: Push</h5>
-                <div class="code-block"><span class="comment"># リモートにプッシュ</span>
+                <div class="code-block language-bash"><span class="comment"># リモートにプッシュ</span>
 git push origin feature/user-register</div>
 
                 <h5>ステップ6: Pull Request作成</h5>
@@ -1731,7 +1699,7 @@ GitHubで:
                 
                 <p>mainにマージされたら、<strong>本番環境にデプロイ</strong>します。</p>
 
-                <div class="code-block"><span class="comment"># mainブランチに切り替え</span>
+                <div class="code-block language-bash"><span class="comment"># mainブランチに切り替え</span>
 git checkout main
 
 <span class="comment"># 最新を取得</span>
@@ -1904,7 +1872,7 @@ clasp deploy -d "ユーザー登録機能を追加"</div>
             <h2><span class="material-icons">description</span>補足資料 - よく使うコマンド集</h2>
             
             <h3>Git コマンド</h3>
-            <div class="code-block"><span class="comment"># 初期設定</span>
+            <div class="code-block language-bash"><span class="comment"># 初期設定</span>
 git config --global user.name <span class="string">"Your Name"</span>
 git config --global user.email <span class="string">"you@example.com"</span>
 
@@ -1934,7 +1902,7 @@ git stash                    <span class="comment"># 変更を一時退避</span
 git stash pop                <span class="comment"># 退避した変更を戻す</span></div>
 
             <h3>Clasp コマンド</h3>
-            <div class="code-block"><span class="comment"># 認証</span>
+            <div class="code-block language-bash"><span class="comment"># 認証</span>
 clasp login                  <span class="comment"># ログイン</span>
 clasp logout                 <span class="comment"># ログアウト</span>
 
@@ -1974,6 +1942,9 @@ clasp version                <span class="comment"># 新しいバージョンを
         <span class="material-icons">arrow_upward</span>
     </div>
 
+    <!-- Prism.js シンタックスハイライト -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="index.js"></script>
 </body>
 </html>

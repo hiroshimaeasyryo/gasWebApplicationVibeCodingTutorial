@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAS Webアプリ開発入門講座 - 1時間で学ぶ現代的な開発知識</title>
+    
+    <!-- Material Design CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1976D2;
+            --primary-dark: #1565C0;
+            --primary-light: #BBDEFB;
+            --accent-color: #FF4081;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --divider-color: #BDBDBD;
+            --background: #FAFAFA;
+            --surface: #FFFFFF;
+            --error: #D32F2F;
+            --success: #388E3C;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--background);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 64px 24px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+            padding: 16px 0;
+            margin-bottom: 32px;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .section {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section h4 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            margin-bottom: 12px;
+            padding-left: 16px;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        .section p {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .material-icons {
+            font-size: 24px;
+        }
+
+        .card {
+            background: var(--background);
+            border-radius: 4px;
+            padding: 20px;
+            margin: 16px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .card.warning {
+            border-left-color: var(--accent-color);
+            background: #FFF3E0;
+        }
+
+        .card.success {
+            border-left-color: var(--success);
+            background: #F1F8E9;
+        }
+
+        .card.info {
+            border-left-color: #2196F3;
+            background: #E3F2FD;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-item {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .comparison-item h4 {
+            margin-top: 0;
+            border: none;
+            padding-left: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-item.before {
+            border-top: 4px solid var(--error);
+        }
+
+        .comparison-item.after {
+            border-top: 4px solid var(--success);
+        }
+
+        .code-block {
+            background: #263238;
+            color: #AEDD3C;
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .code-block .comment {
+            color: #607D8B;
+        }
+
+        .code-block .keyword {
+            color: #C792EA;
+        }
+
+        .code-block .string {
+            color: #C3E88D;
+        }
+
+        .code-block .function {
+            color: #82AAFF;
+        }
+
+        ul, ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            background: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+
+        .db-diagram {
+            background: white;
+            border: 2px solid var(--divider-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+
+        .table-schema {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 12px 0;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .table-schema h5 {
+            margin: 0 0 12px 0;
+            color: #2E7D32;
+            font-size: 1rem;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-item {
+            background: var(--primary-light);
+            padding: 16px 24px;
+            border-radius: 24px;
+            font-weight: 500;
+        }
+
+        .flow-arrow {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .tool-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px;
+            background: var(--background);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+            align-items: start;
+        }
+
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .term-list {
+            display: grid;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .term-item {
+            background: var(--background);
+            padding: 16px;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .term-item dt {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .term-item dd {
+            margin-left: 0;
+            color: var(--text-primary);
+        }
+
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 24px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 48px 24px;
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .relationship-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            background: #F5F5F5;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .relationship-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .entity-box {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            padding: 12px 20px;
+            font-weight: 500;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .relationship-label {
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .toc-section {
+            background: linear-gradient(to bottom, var(--background) 0%, white 100%);
+            padding-bottom: 24px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .toc-item {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toc-item h3 {
+            margin: 0 0 12px 0;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .toc-item ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .toc-item li {
+            margin-bottom: 8px;
+        }
+
+        .toc-item a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc-item a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>🚀 GAS Webアプリ開発入門講座</h1>
+        <p>1時間で学ぶ現代的な開発知識 - AIバイブコーディング時代の必須スキル</p>
+    </header>
+
+    <!-- 目次 -->
+    <section class="toc-section">
+        <div class="container">
+            <div class="section">
+                <h2><span class="material-icons">list</span>目次</h2>
+                <div class="toc-grid">
+                    <div class="toc-item">
+                        <h3>1. Webアプリケーションとは</h3>
+                        <ul>
+                            <li><a href="#section1-1">1.1. Webじゃないアプリケーションとの違い</a></li>
+                            <li><a href="#section1-2">1.2. 社内アプリをWebアプリケーションで作る意義</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>2. プログラミング言語とは</h3>
+                        <ul>
+                            <li><a href="#section2-1">2.1. HTML - マークアップ言語</a></li>
+                            <li><a href="#section2-2">2.2. CSS - スタイルシート</a></li>
+                            <li><a href="#section2-3">2.3. JavaScript - プログラミング言語</a></li>
+                            <li><a href="#section2-3-3">2.3.3. Google Apps Script (GAS)</a></li>
+                            <li><a href="#section2-3-4">2.3.4. フロントエンド/バックエンド</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>3. データベース (DB)</h3>
+                        <ul>
+                            <li><a href="#section3-1">3.1. 広義のデータベース</a></li>
+                            <li><a href="#section3-2">3.2. RDBMS - リレーショナルデータベース</a></li>
+                            <li><a href="#section3-2-2">3.2.2. NoSQL</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>4. エディター</h3>
+                        <ul>
+                            <li><a href="#section4-1">4.1. Cursor - AI駆動エディタ</a></li>
+                            <li><a href="#section4-2">4.2. Antigravity - Google製エディタ</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>5. Clasp</h3>
+                        <ul>
+                            <li><a href="#section5">GASをローカルで開発</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>6. Git と GitHub</h3>
+                        <ul>
+                            <li><a href="#section6-1">6.1. バージョン管理の重要性</a></li>
+                            <li><a href="#section6-2">6.2. Git と GitHub の違い</a></li>
+                            <li><a href="#section6-3">6.3. 用語集</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>7. チーム開発</h3>
+                        <ul>
+                            <li><a href="#section7-1">7.1. 開発メンバーのフロー</a></li>
+                            <li><a href="#section7-2">7.2. レビュワーのフロー</a></li>
+                        </ul>
+                    </div>
+                    <div class="toc-item">
+                        <h3>8. GitHub Projects</h3>
+                        <ul>
+                            <li><a href="#section8">プロジェクト管理</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="#section1"><span class="material-icons">web</span>Webアプリとは</a>
+            <a href="#section2"><span class="material-icons">code</span>プログラミング言語</a>
+            <a href="#section3"><span class="material-icons">storage</span>データベース</a>
+            <a href="#section4"><span class="material-icons">edit</span>エディター</a>
+            <a href="#section5"><span class="material-icons">terminal</span>Clasp</a>
+            <a href="#section6"><span class="material-icons">source</span>Git/GitHub</a>
+            <a href="#section7"><span class="material-icons">group</span>チーム開発</a>
+            <a href="#section8"><span class="material-icons">dashboard</span>Project機能</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Section 1: Webアプリケーションとは -->
+        <section id="section1" class="section">
+            <h2><span class="material-icons">web</span>1. Webアプリケーションとは</h2>
+            
+            <h3 id="section1-1"><span class="material-icons">compare_arrows</span>1.1. Webじゃないアプリケーションとの違い</h3>
+            
+            <p>これまで皆さんがやってきた<span class="highlight">スプレッドシートの関数やGASでの自動化</span>を思い出してください。例えば、データ入力を自動化するスクリプトを作ったとき、どうやって実行していましたか？</p>
+            
+            <p>そう、スクリプトエディタを開いて実行ボタンを押したり、トリガーで自動実行したりしていましたよね。</p>
+
+            <div class="card warning">
+                <h4>従来の自動化の問題点</h4>
+                <ul>
+                    <li><strong>利用者がスプレッドシートを開く必要がある</strong></li>
+                    <li><strong>操作方法が分かりにくい</strong>（どのシートに何を入力するか迷う）</li>
+                    <li><strong>スマホからは使いにくい</strong></li>
+                    <li><strong>複数人が同時に使うと混乱する</strong></li>
+                </ul>
+            </div>
+
+            <p>Webアプリは、<span class="highlight">ブラウザでアクセスできる「専用の画面」を持ったアプリケーション</span>です。GoogleやAmazonのような大規模なものから、社内の勤怠管理システムまで、すべてWebアプリです。</p>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h4><span class="material-icons">close</span>従来: スプレッドシート</h4>
+                    <p>「休暇申請」シート<br>→ A列に名前、B列に日付、C列に理由を入力...<br>→ 入力ルールが守られない、過去データが消される...</p>
+                </div>
+                <div class="comparison-item after">
+                    <h4><span class="material-icons">check</span>Webアプリ: 専用の申請画面</h4>
+                    <p>→ フォームに入力してボタンを押すだけ<br>→ データは自動的に整理されてスプレッドシートに保存<br>→ 安全で使いやすい！</p>
+                </div>
+            </div>
+
+            <h3 id="section1-2"><span class="material-icons">emoji_people</span>1.2. 社内アプリをWebアプリケーションで作る意義</h3>
+            
+            <p>例えば、社内で<span class="highlight">「マッチングアプリ」</span>を作るとします。Tinderのような異性交友アプリを想像してください。</p>
+
+            <div class="card info">
+                <h4>💡 マッチングアプリの機能例</h4>
+                <ul>
+                    <li>プロフィール作成（写真、自己紹介、趣味）</li>
+                    <li>他のユーザーを閲覧</li>
+                    <li>「いいね」を送る</li>
+                    <li>お互いに「いいね」したらマッチング成立</li>
+                    <li>マッチングした相手とメッセージ交換</li>
+                </ul>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h4><span class="material-icons">close</span>スプレッドシートだけの場合</h4>
+                    <ul>
+                        <li>各自が自由に編集 → データが崩れる</li>
+                        <li>検索が大変 → Ctrl+Fで探す？</li>
+                        <li>モバイルから使いにくい</li>
+                        <li>プライバシーが守れない</li>
+                    </ul>
+                </div>
+                <div class="comparison-item after">
+                    <h4><span class="material-icons">check</span>Webアプリにすると</h4>
+                    <ul>
+                        <li><strong>URLを開くだけで誰でも使える</strong>（インストール不要）</li>
+                        <li><strong>スマホでも快適に使える</strong>（レスポンシブ対応）</li>
+                        <li><strong>権限管理が簡単</strong>（自分のデータだけ編集可能）</li>
+                        <li><strong>見た目を整えられる</strong>（使いやすいUI）</li>
+                        <li><strong>データの整合性を保てる</strong>（プログラムで制御）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card success">
+                <p><strong>GASで作れば</strong>、<span class="highlight">無料</span>で、<span class="highlight">社内のGoogleアカウント</span>と連携でき、<span class="highlight">スプレッドシートをDBとして使える</span>ので、小規模な社内システムには最適です。</p>
+            </div>
+        </section>
+
+        <!-- Section 2: プログラミング言語とは -->
+        <section id="section2" class="section">
+            <h2><span class="material-icons">code</span>2. プログラミング言語とは</h2>
+            
+            <div class="card info">
+                <h4>🏗️ Webアプリを構成する3つの言語</h4>
+                <p>Webアプリは基本的に3つの言語で作られます。家を建てるのに例えると分かりやすいです。</p>
+                <ul>
+                    <li><strong>HTML</strong> = 骨組み・構造（柱や壁）</li>
+                    <li><strong>CSS</strong> = 見た目・装飾（壁紙や家具）</li>
+                    <li><strong>JavaScript</strong> = 動き・機能（電気やエレベーター）</li>
+                </ul>
+            </div>
+
+            <h3 id="section2-1"><span class="material-icons">article</span>2.1. マークアップ言語「HTML」とは</h3>
+            
+            <p>HTMLは『HyperText Markup Language』の略で、<span class="highlight">マークアップ言語</span>です。プログラミング言語ではありません。『ここは見出し』『ここはボタン』『ここは入力欄』と<strong>構造を定義</strong>するだけです。</p>
+
+            <div class="card">
+                <h4>マッチングアプリの例</h4>
+                <div class="code-block">&lt;div class="user-card"&gt;
+  &lt;img src="profile.jpg" alt="プロフィール写真"&gt;
+  &lt;h2&gt;田中 太郎&lt;/h2&gt;
+  &lt;p&gt;26歳 / 東京都&lt;/p&gt;
+  &lt;p&gt;趣味: カメラ、旅行、カフェ巡り&lt;/p&gt;
+  &lt;button class="like-btn"&gt;❤️ いいね&lt;/button&gt;
+&lt;/div&gt;</div>
+            </div>
+
+            <p>これは「ユーザーカードがあって、その中に写真と名前と年齢と趣味といいねボタンがある」という<strong>構造</strong>を定義しているだけです。見た目はまだ整っていません。</p>
+
+            <div class="card info">
+                <h4>💡 HTMLのポイント</h4>
+                <ul>
+                    <li>タグ(<code>&lt;tag&gt;</code>)で要素を囲む</li>
+                    <li>階層構造(入れ子)で関係性を表現</li>
+                    <li><strong>意味的な構造</strong>を作るのが仕事</li>
+                </ul>
+            </div>
+
+            <h3 id="section2-2"><span class="material-icons">palette</span>2.2. スタイルシート「CSS」とは</h3>
+            
+            <p>CSSは『Cascading Style Sheets』の略で、HTMLで作った骨組みに<span class="highlight">デザインを適用</span>します。</p>
+
+            <div class="card">
+                <h4>同じHTMLにCSSを適用すると</h4>
+                <div class="code-block">.user-card {
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.like-btn {
+  background: #FF4081;
+  color: white;
+  padding: 12px 32px;
+  border-radius: 24px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.like-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 64, 129, 0.4);
+}</div>
+            </div>
+
+            <p>すると、ユーザーカードが<strong>グラデーション背景で、角が丸く</strong>なり、<strong>いいねボタンがピンク色</strong>になります。ホバーすると少し大きくなるアニメーションも！</p>
+
+            <div class="card success">
+                <p>HTMLは変えずに、見た目だけ変更できるのがポイントです。社内アプリでも、使いやすいデザインにすることで<strong>利用率が上がります</strong>。</p>
+            </div>
+
+            <h3 id="section2-3"><span class="material-icons">play_arrow</span>2.3. プログラミング言語「JavaScript」とは</h3>
+            
+            <p>JavaScriptは<span class="highlight">本物のプログラミング言語</span>です。ボタンを押したときの動作、データの計算、画面の更新など、<strong>動的な処理</strong>を実装します。</p>
+
+            <div class="card">
+                <h4>マッチングアプリの例</h4>
+                <div class="code-block">// いいねボタンを押したときの処理
+document.querySelector('.like-btn').addEventListener('click', function() {
+  const userId = this.getAttribute('data-user-id');
+  
+  // いいねアニメーション
+  this.classList.add('liked');
+  
+  // サーバー(GAS)にデータを送信
+  google.script.run
+    .withSuccessHandler(handleLikeSuccess)
+    .withFailureHandler(handleError)
+    .sendLike(userId);
+});
+
+function handleLikeSuccess(result) {
+  if (result.matched) {
+    // マッチング成立！
+    showMatchNotification(result.userName);
+  } else {
+    showMessage('いいねを送りました！');
+  }
+}</div>
+            </div>
+
+            <p>ボタンクリック → アニメーション → サーバーに送信 → マッチング判定 → 結果表示、という<strong>一連の流れ</strong>を制御できます。</p>
+
+            <h4>2.3.1. JavaScript以外のプログラミング言語とは</h4>
+            
+            <p>プログラミング言語は100種類以上ありますが、用途によって使い分けられています。</p>
+
+            <div class="tool-card">
+                <div class="tool-icon">🐍</div>
+                <div>
+                    <h4>Python</h4>
+                    <p>データ分析、AI、自動化（ExcelのVBAに近い用途も）</p>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">☕</div>
+                <div>
+                    <h4>Java</h4>
+                    <p>大規模システム、Androidアプリ</p>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🐘</div>
+                <div>
+                    <h4>PHP</h4>
+                    <p>WordPressなどWebサーバー側の処理</p>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💎</div>
+                <div>
+                    <h4>Ruby</h4>
+                    <p>Webアプリ開発（スタートアップでよく使われる）</p>
+                </div>
+            </div>
+
+            <div class="card success">
+                <p><strong>でも今回はJavaScriptだけ覚えればOKです</strong>。なぜなら...</p>
+            </div>
+
+            <h4>2.3.2. プログラミング言語の用途と流行</h4>
+            
+            <p>JavaScriptは<span class="highlight">世界で最も使われている言語</span>です（GitHub調べ）。</p>
+
+            <div class="card info">
+                <h4>なぜJavaScriptが最強なのか</h4>
+                <ol>
+                    <li><strong>ブラウザで動く唯一の言語</strong>（Web開発には必須）</li>
+                    <li><strong>サーバー側でも動く</strong>（Node.js）</li>
+                    <li><strong>モバイルアプリも作れる</strong>（React Native）</li>
+                    <li><strong>学習コストが低い</strong></li>
+                </ol>
+                <p>特に<strong>社内業務アプリ</strong>の場合、JavaScriptだけで完結できるのが大きなメリットです。</p>
+            </div>
+
+            <h4 id="section2-3-3">2.3.3. Google Apps Script(GAS)とは</h4>
+            
+            <p>GASは<span class="highlight">JavaScriptをベースにした</span>、Googleが作ったスクリプト言語です。</p>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>GASの特徴</h4>
+                    <ul>
+                        <li>文法はJavaScriptとほぼ同じ（95%互換）</li>
+                        <li>スプレッドシート、Gmail、カレンダーなど<strong>Googleサービスを操作できる</strong></li>
+                        <li><strong>サーバー不要</strong>（Googleのサーバーで動く）</li>
+                        <li><strong>無料</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h4>これまでやってきたこと</h4>
+                    <div class="code-block">function onEdit(e) {
+  const sheet = e.source.getActiveSheet();
+  // スプレッドシート操作
+}</div>
+                </div>
+                <div class="comparison-item after">
+                    <h4>これからやること（Webアプリ）</h4>
+                    <div class="code-block">function doGet() {
+  return HtmlService
+    .createHtmlOutputFromFile('index')
+    .setTitle('マッチングアプリ');
+}
+
+function sendLike(targetUserId) {
+  const currentUser = Session.getActiveUser().getEmail();
+  const ss = SpreadsheetApp.openById('xxx');
+  // データをスプレッドシートに保存
+  return { success: true };
+}</div>
+                </div>
+            </div>
+
+            <p>スプレッドシート操作に<strong>Webページの配信</strong>と<strong>データ受け渡し</strong>が加わるだけです。</p>
+
+            <h4 id="section2-3-4">2.3.4. フロントエンド/バックエンドとは</h4>
+            
+            <p>Webアプリは<span class="highlight">2つの世界</span>に分かれています。</p>
+
+            <div class="flow-diagram">
+                <div class="flow-item">フロントエンド<br>(Front-end)</div>
+                <span class="material-icons flow-arrow">arrow_forward</span>
+                <div class="flow-item">通信</div>
+                <span class="material-icons flow-arrow">arrow_forward</span>
+                <div class="flow-item">バックエンド<br>(Back-end)</div>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>🎨 フロントエンド = ユーザーが見る・触る部分</h4>
+                    <ul>
+                        <li>ブラウザで動く（HTML, CSS, JavaScript）</li>
+                        <li>画面の表示、ボタンの動作、入力チェック</li>
+                        <li>『レストランのホールスタッフ』</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>⚙️ バックエンド = 裏で動く処理</h4>
+                    <ul>
+                        <li>サーバーで動く（GASの場合は<code>.gs</code>ファイル）</li>
+                        <li>データ保存、計算、権限チェック</li>
+                        <li>『レストランの厨房』</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card info">
+                <h4>マッチングアプリでの処理の流れ</h4>
+                <ol class="step-list">
+                    <li><strong>フロントエンド:</strong> ユーザーが相手のプロフィールを見て「いいね」ボタンをクリック</li>
+                    <li>データをバックエンドに送信</li>
+                    <li><strong>バックエンド:</strong> 権限チェック → いいねをスプレッドシートに保存 → 相手も自分に「いいね」しているかチェック → マッチング判定</li>
+                    <li>結果をフロントエンドに返す</li>
+                    <li><strong>フロントエンド:</strong> 「マッチングしました！」と表示、通知音を鳴らす</li>
+                </ol>
+            </div>
+
+            <div class="card success">
+                <h4>分業のメリット</h4>
+                <ul>
+                    <li><strong>セキュリティ:</strong> 重要な処理は裏側で（ユーザーは改ざんできない）</li>
+                    <li><strong>保守性:</strong> 画面と処理を別々に修正できる</li>
+                    <li><strong>拡張性:</strong> 同じバックエンドで、Webアプリとモバイルアプリを作れる</li>
+                </ul>
+            </div>
+
+            <h4>2.3.4.1. GASのWebアプリケーションにおけるGASファイル<code>.gs</code>の役割</h4>
+            
+            <p>GASの<code>.gs</code>ファイルは<span class="highlight">サーバー側</span>で動きます。</p>
+
+            <div class="card">
+                <h4>主な役割</h4>
+                <ol>
+                    <li><strong>Webページの配信</strong>（doGet関数）</li>
+                    <li><strong>データの保存・取得</strong>（スプレッドシート操作）</li>
+                    <li><strong>ビジネスロジック</strong>（計算、判定、通知）</li>
+                    <li><strong>セキュリティ</strong>（権限チェック）</li>
+                </ol>
+            </div>
+
+            <div class="code-block"><span class="comment">// Code.gs - バックエンド</span>
+
+<span class="comment">// Webページを配信</span>
+<span class="keyword">function</span> <span class="function">doGet</span>() {
+  <span class="keyword">return</span> HtmlService.<span class="function">createHtmlOutputFromFile</span>(<span class="string">'index'</span>)
+    .<span class="function">setTitle</span>(<span class="string">'マッチングアプリ'</span>)
+    .<span class="function">setXFrameOptionsMode</span>(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+<span class="comment">// フロントエンドから呼ばれる関数</span>
+<span class="keyword">function</span> <span class="function">sendLike</span>(targetUserId) {
+  <span class="comment">// 1. 現在のユーザーを取得</span>
+  <span class="keyword">const</span> currentUser = Session.<span class="function">getActiveUser</span>().<span class="function">getEmail</span>();
+  
+  <span class="comment">// 2. データ保存</span>
+  <span class="keyword">const</span> ss = SpreadsheetApp.<span class="function">openById</span>(<span class="string">'your-spreadsheet-id'</span>);
+  <span class="keyword">const</span> likesSheet = ss.<span class="function">getSheetByName</span>(<span class="string">'いいね'</span>);
+  likesSheet.<span class="function">appendRow</span>([<span class="keyword">new</span> Date(), currentUser, targetUserId]);
+  
+  <span class="comment">// 3. マッチング判定</span>
+  <span class="keyword">const</span> matched = <span class="function">checkIfMatched</span>(currentUser, targetUserId);
+  
+  <span class="comment">// 4. マッチングしたら通知メール送信</span>
+  <span class="keyword">if</span> (matched) {
+    <span class="function">sendMatchNotification</span>(currentUser, targetUserId);
+  }
+  
+  <span class="keyword">return</span> { 
+    success: <span class="keyword">true</span>, 
+    matched: matched,
+    message: matched ? <span class="string">'マッチングしました！'</span> : <span class="string">'いいねを送りました'</span>
+  };
+}
+
+<span class="keyword">function</span> <span class="function">checkIfMatched</span>(user1, user2) {
+  <span class="keyword">const</span> ss = SpreadsheetApp.<span class="function">openById</span>(<span class="string">'your-spreadsheet-id'</span>);
+  <span class="keyword">const</span> likesSheet = ss.<span class="function">getSheetByName</span>(<span class="string">'いいね'</span>);
+  <span class="keyword">const</span> data = likesSheet.<span class="function">getDataRange</span>().<span class="function">getValues</span>();
+  
+  <span class="comment">// 相手も自分に「いいね」しているかチェック</span>
+  <span class="keyword">return</span> data.<span class="function">some</span>(row => 
+    row[1] === user2 && row[2] === user1
+  );
+}</div>
+
+            <div class="card info">
+                <p><strong>ポイント:</strong> フロントエンド（JavaScript）からは、<code>google.script.run.sendLike()</code>で呼び出せます。</p>
+            </div>
+
+            <h4>2.3.4.2. GASのWebアプリケーションにおけるJavaScript<code>.js</code>の役割</h4>
+            
+            <p>HTMLファイルの中に書く<code>&lt;script&gt;</code>タグ内のJavaScript、または別の<code>.js</code>ファイルは<span class="highlight">ブラウザ側</span>で動きます。</p>
+
+            <div class="card">
+                <h4>主な役割</h4>
+                <ol>
+                    <li><strong>ユーザー操作への反応</strong>（クリック、スワイプ、入力）</li>
+                    <li><strong>画面の更新</strong>（データ表示、アニメーション、エラー表示）</li>
+                    <li><strong>バックエンドとの通信</strong>（<code>google.script.run</code>）</li>
+                    <li><strong>入力チェック</strong>（バリデーション）</li>
+                </ol>
+            </div>
+
+            <div class="code-block"><span class="comment">&lt;!-- index.html内のscript --&gt;</span>
+<span class="keyword">&lt;script&gt;</span>
+<span class="comment">// いいねボタンクリック時の処理</span>
+<span class="keyword">function</span> <span class="function">handleLike</span>(userId) {
+  <span class="comment">// 1. 入力チェック（フロントエンド）</span>
+  <span class="keyword">if</span> (!userId) {
+    <span class="function">alert</span>(<span class="string">'ユーザーIDが不正です'</span>);
+    <span class="keyword">return</span>;
+  }
+  
+  <span class="comment">// 2. ボタンを無効化（二重送信防止）</span>
+  <span class="keyword">const</span> btn = <span class="keyword">document</span>.<span class="function">querySelector</span>(<span class="string">'.like-btn'</span>);
+  btn.disabled = <span class="keyword">true</span>;
+  btn.textContent = <span class="string">'送信中...'</span>;
+  
+  <span class="comment">// 3. バックエンド(GAS)を呼び出し</span>
+  google.script.run
+    .<span class="function">withSuccessHandler</span>(onLikeSuccess)
+    .<span class="function">withFailureHandler</span>(onLikeError)
+    .<span class="function">sendLike</span>(userId);
+}
+
+<span class="keyword">function</span> <span class="function">onLikeSuccess</span>(result) {
+  <span class="keyword">if</span> (result.matched) {
+    <span class="comment">// マッチング成立アニメーション</span>
+    <span class="function">showMatchAnimation</span>();
+    <span class="function">playMatchSound</span>();
+    <span class="function">showModal</span>(<span class="string">'🎉 マッチングしました！'</span>);
+  } <span class="keyword">else</span> {
+    <span class="function">showToast</span>(<span class="string">'いいねを送りました'</span>);
+  }
+  
+  <span class="comment">// 画面を更新</span>
+  <span class="function">loadNextUser</span>();
+}
+
+<span class="keyword">function</span> <span class="function">onLikeError</span>(error) {
+  <span class="function">alert</span>(<span class="string">'エラー: '</span> + error.message);
+  
+  <span class="comment">// ボタンを元に戻す</span>
+  <span class="keyword">const</span> btn = <span class="keyword">document</span>.<span class="function">querySelector</span>(<span class="string">'.like-btn'</span>);
+  btn.disabled = <span class="keyword">false</span>;
+  btn.textContent = <span class="string">'❤️ いいね'</span>;
+}
+<span class="keyword">&lt;/script&gt;</span></div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4><code>.gs</code>ファイル（バックエンド）</h4>
+                    <ul>
+                        <li>Googleのサーバーで動く</li>
+                        <li>スプレッドシート操作可能</li>
+                        <li>Gmail送信可能</li>
+                        <li>セキュアな処理</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4><code>.js</code>ファイル（フロントエンド）</h4>
+                    <ul>
+                        <li>ユーザーのブラウザで動く</li>
+                        <li>DOM操作可能</li>
+                        <li>アニメーション実装</li>
+                        <li>即座に反応</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: データベース -->
+        <section id="section3" class="section">
+            <h2><span class="material-icons">storage</span>3. データベース(DB)</h2>
+            
+            <p>Webアプリにとって、データベースは<span class="highlight">記憶装置</span>です。ユーザーが入力したデータを保存し、必要なときに取り出します。</p>
+
+            <h3 id="section3-1"><span class="material-icons">folder</span>3.1. 広義のデータベース</h3>
+            
+            <p>広い意味では、<span class="highlight">データが整理されて保存されているもの</span>はすべてデータベースです。</p>
+
+            <div class="card info">
+                <h4>データベースの例</h4>
+                <ul>
+                    <li>Excelファイル</li>
+                    <li>スプレッドシート</li>
+                    <li>CSVファイル</li>
+                    <li>JSONファイル</li>
+                </ul>
+            </div>
+
+            <p>私たちのような<strong>小規模事業者</strong>は、高価なデータベースシステムを導入する代わりに、<span class="highlight">スプレッドシートをデータベースとして使います</span>。</p>
+
+            <div class="card">
+                <h4>マッチングアプリのスプレッドシート構成例</h4>
+                <div class="table-schema">
+                    <h5>📊 「ユーザー」シート</h5>
+                    <p>ID | メールアドレス | 名前 | 年齢 | 性別 | 自己紹介 | 趣味 | 登録日</p>
+                </div>
+                <div class="table-schema">
+                    <h5>❤️ 「いいね」シート</h5>
+                    <p>ID | 送信者ID | 受信者ID | 送信日時</p>
+                </div>
+                <div class="table-schema">
+                    <h5>💬 「メッセージ」シート</h5>
+                    <p>ID | 送信者ID | 受信者ID | メッセージ | 送信日時 | 既読フラグ</p>
+                </div>
+                <div class="table-schema">
+                    <h5>💑 「マッチング」シート</h5>
+                    <p>ID | ユーザー1のID | ユーザー2のID | マッチング日時 | ステータス</p>
+                </div>
+            </div>
+
+            <p>これで立派な<span class="highlight">リレーショナルデータベース的な運用</span>ができます。</p>
+
+            <div class="card warning">
+                <h4>⚠️ スプレッドシートの限界</h4>
+                <ul>
+                    <li>同時アクセスが多いと遅くなる（100人以上が同時利用すると厳しい）</li>
+                    <li>データ量が多すぎると重くなる（数万行が限界）</li>
+                    <li>複雑な検索は苦手（JOIN処理など）</li>
+                </ul>
+                <p><strong>でも、社内の数十人〜数百人規模なら十分実用的です。</strong></p>
+            </div>
+
+            <h3 id="section3-2"><span class="material-icons">dns</span>3.2. 狭義のデータベース</h3>
+            
+            <p>規模が大きくなったり、複雑な処理が必要になったりすると、専門的な<span class="highlight">データベース管理システム（DBMS）</span>を使います。</p>
+
+            <div class="card info">
+                <p><strong>今は詳しく知る必要はありませんが</strong>、将来のために名前だけ覚えておいてください。</p>
+            </div>
+
+            <h4>3.2.1. RDBMS（リレーショナルデータベース）</h4>
+            
+            <p><strong>RDBMS</strong> = Relational Database Management System</p>
+
+            <div class="card">
+                <h4>特徴</h4>
+                <ul>
+                    <li>データを<strong>表（テーブル）</strong>で管理</li>
+                    <li>表同士を<strong>関連付け（リレーション）</strong>できる</li>
+                    <li><strong>SQL</strong>という言語でデータを操作</li>
+                    <li>データの整合性を厳密に保証</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🐬</div>
+                <div>
+                    <h4>MySQL / PostgreSQL</h4>
+                    <p>無料で使える人気のRDBMS。多くのWebサービスで使用されている</p>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">💰</div>
+                <div>
+                    <h4>Oracle / SQL Server</h4>
+                    <p>有料だが高機能。大企業の基幹システムで使用される</p>
+                </div>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>スプレッドシート用語</h4>
+                    <ul>
+                        <li>シート</li>
+                        <li>行</li>
+                        <li>列</li>
+                        <li>VLOOKUP</li>
+                        <li>QUERY関数</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>RDBMS用語</h4>
+                    <ul>
+                        <li>テーブル</li>
+                        <li>レコード（行）</li>
+                        <li>カラム（列）</li>
+                        <li>JOIN</li>
+                        <li>SQL</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card success">
+                <p>実は、皆さんがスプレッドシートでやっていたことは<strong>RDBMSの真似事</strong>だったんです！</p>
+            </div>
+
+            <h4>マッチングアプリで学ぶRDBの構造</h4>
+
+            <p>マッチングアプリのデータ構造を通じて、<span class="highlight">リレーショナルデータベースの重要な概念</span>を理解しましょう。</p>
+
+            <div class="db-diagram">
+                <h4>📊 テーブル設計とリレーション</h4>
+                
+                <div class="relationship-diagram">
+                    <div class="relationship-row">
+                        <div class="entity-box">ユーザーテーブル<br>(users)</div>
+                        <div class="relationship-label">1:N</div>
+                        <div class="entity-box">メッセージテーブル<br>(messages)</div>
+                    </div>
+                    <div style="padding-left: 20px; color: var(--text-secondary);">
+                        <p>1人のユーザーは複数のメッセージを送信できる</p>
+                    </div>
+                </div>
+
+                <div class="relationship-diagram">
+                    <div class="relationship-row">
+                        <div class="entity-box">ユーザーテーブル<br>(users)</div>
+                        <div class="relationship-label">N:N</div>
+                        <div class="entity-box">ユーザーテーブル<br>(users)</div>
+                    </div>
+                    <div style="padding-left: 20px; color: var(--text-secondary);">
+                        <p>多数のユーザー同士がマッチングできる → 中間テーブルが必要！</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-schema">
+                <h5>👤 ユーザーテーブル (users)</h5>
+                <div class="code-block" style="background: #E8F5E9; color: #2E7D32;">
+user_id (主キー) | email | name | age | gender | bio | interests | photo_url | created_at</div>
+                <p style="margin-top: 8px; color: var(--text-secondary);">※ user_idは各ユーザーを一意に識別する主キー（Primary Key）</p>
+            </div>
+
+            <div class="table-schema">
+                <h5>❤️ いいねテーブル (likes) - 中間テーブルの例</h5>
+                <div class="code-block" style="background: #E8F5E9; color: #2E7D32;">
+like_id (主キー) | from_user_id (外部キー) | to_user_id (外部キー) | created_at</div>
+                <p style="margin-top: 8px; color: var(--text-secondary);">※ from_user_id と to_user_id は users テーブルの user_id を参照（外部キー）</p>
+            </div>
+
+            <div class="table-schema">
+                <h5>💑 マッチングテーブル (matches) - N:N関係を表現する中間テーブル</h5>
+                <div class="code-block" style="background: #E8F5E9; color: #2E7D32;">
+match_id (主キー) | user1_id (外部キー) | user2_id (外部キー) | matched_at | status</div>
+                <p style="margin-top: 8px; color: var(--text-secondary);">※ お互いに「いいね」した場合にレコードが作成される</p>
+            </div>
+
+            <div class="table-schema">
+                <h5>💬 メッセージテーブル (messages) - 1:N関係の例</h5>
+                <div class="code-block" style="background: #E8F5E9; color: #2E7D32;">
+message_id (主キー) | match_id (外部キー) | sender_id (外部キー) | message | sent_at | is_read</div>
+                <p style="margin-top: 8px; color: var(--text-secondary);">※ 1つのマッチングに対して複数のメッセージが紐づく（1:N関係）</p>
+            </div>
+
+            <div class="card info">
+                <h4>🔑 重要な概念</h4>
+                
+                <h5>1. 主キー（Primary Key）</h5>
+                <p>各レコードを一意に識別するID。重複不可。例: user_id, message_id</p>
+                
+                <h5>2. 外部キー（Foreign Key）</h5>
+                <p>他のテーブルの主キーを参照するカラム。テーブル間の関係を表現。例: from_user_id → users.user_id</p>
+                
+                <h5>3. 1:N関係（One-to-Many）</h5>
+                <p>1つのレコードが複数のレコードと関連する。例: 1人のユーザーが複数のメッセージを送信</p>
+                
+                <h5>4. N:N関係（Many-to-Many）</h5>
+                <p>複数のレコードが複数のレコードと関連する。例: ユーザー同士のマッチング</p>
+                
+                <h5>5. 中間テーブル（Junction Table）</h5>
+                <p>N:N関係を表現するために必要。2つの外部キーを持つ。例: likes, matches</p>
+            </div>
+
+            <div class="card">
+                <h4>💡 実際のデータ例</h4>
+                
+                <h5>ユーザーテーブル</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+| user_id | name      | age | gender |
+|---------|-----------|-----|--------|
+| 1       | 田中太郎   | 26  | 男性   |
+| 2       | 佐藤花子   | 24  | 女性   |
+| 3       | 鈴木一郎   | 28  | 男性   |</div>
+
+                <h5>いいねテーブル</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+| like_id | from_user_id | to_user_id | created_at          |
+|---------|--------------|------------|---------------------|
+| 1       | 1            | 2          | 2026-01-15 10:00:00 |
+| 2       | 2            | 1          | 2026-01-15 14:00:00 | ← 相互いいね!
+| 3       | 3            | 2          | 2026-01-16 09:00:00 |</div>
+
+                <h5>マッチングテーブル（お互いにいいねしたら作成）</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+| match_id | user1_id | user2_id | matched_at          | status |
+|----------|----------|----------|---------------------|--------|
+| 1        | 1        | 2        | 2026-01-15 14:00:00 | active |</div>
+
+                <h5>メッセージテーブル</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+| message_id | match_id | sender_id | message              | sent_at             |
+|------------|----------|-----------|----------------------|---------------------|
+| 1          | 1        | 1         | こんにちは！         | 2026-01-15 14:05:00 |
+| 2          | 1        | 2         | はじめまして😊      | 2026-01-15 14:10:00 |
+| 3          | 1        | 1         | よろしくお願いします | 2026-01-15 14:15:00 |</div>
+            </div>
+
+            <div class="card success">
+                <h4>✅ スプレッドシートでの実装</h4>
+                <p>GASのWebアプリでは、これらのテーブルを<strong>スプレッドシートの各シートとして実装</strong>します。</p>
+                <ul>
+                    <li>「ユーザー」シート = usersテーブル</li>
+                    <li>「いいね」シート = likesテーブル</li>
+                    <li>「マッチング」シート = matchesテーブル</li>
+                    <li>「メッセージ」シート = messagesテーブル</li>
+                </ul>
+                <p>外部キーの制約は手動で管理し、GASのコードでデータの整合性を保証します。</p>
+            </div>
+
+            <h4 id="section3-2-2">3.2.2. NoSQL</h4>
+            
+            <p><strong>NoSQL</strong> = RDBMSとは違う形式のデータベース（「Not only SQL」の略）</p>
+
+            <div class="card">
+                <h4>特徴</h4>
+                <ul>
+                    <li>表形式じゃなくてもOK</li>
+                    <li>柔軟なデータ構造（スキーマレス）</li>
+                    <li>大量データ・高速処理に強い</li>
+                    <li>水平スケーリングが得意</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🍃</div>
+                <div>
+                    <h4>MongoDB（ドキュメント型）</h4>
+                    <p>JSONのような形式でデータを保存。柔軟な構造が特徴</p>
+                    <div class="code-block">{
+  "user_id": "user123",
+  "name": "田中太郎",
+  "interests": ["カメラ", "旅行"],
+  "profile": { 
+    "bio": "...", 
+    "photo": "..." 
+  }
+}</div>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">🔥</div>
+                <div>
+                    <h4>Firebase（Googleのサービス）</h4>
+                    <p>リアルタイム同期、認証、ホスティングまで提供。モバイルアプリと相性抜群</p>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <div class="tool-icon">⚡</div>
+                <div>
+                    <h4>Redis（キー・バリュー型）</h4>
+                    <p>超高速キャッシュ。セッション管理やリアルタイムランキングに使用</p>
+                </div>
+            </div>
+
+            <div class="card info">
+                <h4>いつ使う？</h4>
+                <ul>
+                    <li>リアルタイムチャット（Firebase）</li>
+                    <li>大量のログデータ（MongoDB）</li>
+                    <li>柔軟なデータ構造が必要なとき（MongoDB）</li>
+                    <li>高速キャッシュが必要なとき（Redis）</li>
+                </ul>
+                <p><strong>今回は使いませんが</strong>、「そういうものもある」と知っておいてください。</p>
+            </div>
+        </section>
+
+        <!-- Section 4: エディター -->
+        <section id="section4" class="section">
+            <h2><span class="material-icons">edit</span>4. エディター</h2>
+            
+            <p>これまでは<strong>GASのスクリプトエディタ</strong>でコードを書いていましたね。でも、本格的な開発には限界があります。</p>
+
+            <div class="card warning">
+                <h4>GASエディタの問題点</h4>
+                <ul>
+                    <li>複数ファイルの編集がしづらい</li>
+                    <li>コード補完が弱い</li>
+                    <li>バージョン管理ができない</li>
+                    <li>チーム開発に不向き</li>
+                    <li>AIアシスタントが使えない</li>
+                </ul>
+            </div>
+
+            <p>そこで、<span class="highlight">AIを搭載した次世代エディター</span>を使います。</p>
+
+            <h3 id="section4-1"><span class="material-icons">auto_awesome</span>4.1. Cursor</h3>
+            
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <span class="material-icons" style="font-size: 48px;">cursor_pointer</span>
+                </div>
+                <div>
+                    <h4>Cursor - AI駆動の開発環境</h4>
+                    <p><strong>Cursor</strong>は、VS Code（世界で最も使われているエディター）をベースに、<span class="highlight">AI機能を強化</span>したエディターです。</p>
+                    <a href="https://cursor.sh/" class="btn" target="_blank">
+                        <span class="material-icons">download</span>
+                        Cursorをダウンロード
+                    </a>
+                </div>
+            </div>
+
+            <div class="card success">
+                <h4>✨ できること</h4>
+                <ul>
+                    <li><strong>AIにコードを書いてもらう</strong>（Cmd+K / Ctrl+K）</li>
+                    <li><strong>コードの説明を聞く</strong>（選択して質問）</li>
+                    <li><strong>バグを見つけて修正</strong>（エラーをAIに投げる）</li>
+                    <li><strong>リファクタリング提案</strong>（より良い書き方を提案）</li>
+                    <li><strong>コード補完</strong>（Tab で受け入れ）</li>
+                    <li><strong>複数ファイルを横並びで編集</strong></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>マッチングアプリの例</h4>
+                <p><strong>あなた:</strong> 「メンバー一覧をカード形式で表示するHTMLを書いて」</p>
+                <p><strong>Cursor AI:</strong> 「はい、こちらです」（コード生成）</p>
+                <br>
+                <p><strong>あなた:</strong> 「このエラーは何？」（エラーメッセージを選択）</p>
+                <p><strong>Cursor AI:</strong> 「変数名のスペルミスです。修正しましょうか？」</p>
+            </div>
+
+            <div class="card info">
+                <p><strong>今回の開発では必須</strong>です。むしろ、<span class="highlight">Cursorがあるから初心者でも開発できる</span>時代になりました。</p>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>料金プラン</h4>
+                    <ul>
+                        <li><strong>Free:</strong> 月50回までAI使用可能</li>
+                        <li><strong>Pro:</strong> $20/月（unlimited）</li>
+                        <li><strong>Business:</strong> $40/月（チーム向け）</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>主な機能</h4>
+                    <ul>
+                        <li>Cmd+K でAIにコード生成依頼</li>
+                        <li>Cmd+L でAIチャット</li>
+                        <li>Tab でコード補完受け入れ</li>
+                        <li>Git統合</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 id="section4-2"><span class="material-icons">code</span>4.2. Antigravity</h3>
+            
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <span class="material-icons" style="font-size: 48px;">rocket_launch</span>
+                </div>
+                <div>
+                    <h4>Antigravity - Google製AI駆動エディタ</h4>
+                    <p><strong>Antigravity</strong>は、Googleが提供する<span class="highlight">AI駆動の次世代エディタ</span>です。Cursor同様にAIアシスタントを搭載していますが、<strong>ブラウザサブエージェント</strong>という独自機能が特徴です。</p>
+                    <a href="https://codelabs.developers.google.com/getting-started-google-antigravity?hl=ja" class="btn" target="_blank">
+                        <span class="material-icons">school</span>
+                        Antigravityチュートリアル
+                    </a>
+                </div>
+            </div>
+
+            <div class="card success">
+                <h4>🚀 Antigravityの特徴</h4>
+                <ul>
+                    <li><strong>ブラウザサブエージェント:</strong> AIがブラウザを操作してデバッグやテストを自動化</li>
+                    <li><strong>Google Cloud統合:</strong> GCPサービスとシームレスに連携</li>
+                    <li><strong>AIペアプログラミング:</strong> リアルタイムでAIが開発をアシスト</li>
+                    <li><strong>マルチモーダルAI:</strong> コード、画像、ドキュメントを横断的に理解</li>
+                    <li><strong>Gemini統合:</strong> GoogleのGeminiモデルを活用</li>
+                </ul>
+            </div>
+
+            <div class="card info">
+                <h4>💡 ブラウザサブエージェントとは？</h4>
+                <p>Antigravityの最大の特徴は、<strong>AIが実際にブラウザを操作できる</strong>こと。</p>
+                <ul>
+                    <li>Webアプリを自動でテスト（ボタンをクリック、フォーム入力など）</li>
+                    <li>UIの問題を自動検出（レイアウト崩れ、リンク切れなど）</li>
+                    <li>スクリーンショットを撮って視覚的にチェック</li>
+                    <li>パフォーマンスを計測</li>
+                </ul>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>Cursor</h4>
+                    <ul>
+                        <li>VS Codeベース</li>
+                        <li>汎用エディタ</li>
+                        <li><strong>複数AIモデルを選択可能</strong>（Claude、GPT-4、Gemini等）</li>
+                        <li>幅広い言語・フレームワーク対応</li>
+                        <li>大規模コミュニティ</li>
+                        <li>豊富な拡張機能</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>Antigravity</h4>
+                    <ul>
+                        <li>Google製</li>
+                        <li><strong>ブラウザサブエージェント</strong>が強力</li>
+                        <li>Gemini統合（モデル選択の幅は限定的）</li>
+                        <li>GCPサービスとシームレス連携</li>
+                        <li>Google Workspaceとの親和性</li>
+                        <li>最新のGoogleテクノロジー</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>どちらを使うべき？</h4>
+                <p><strong>両方使えるのが理想</strong>ですが、初心者には：</p>
+                <ul>
+                    <li><strong>Cursor推奨:</strong> 情報が多く、トラブル時に解決しやすい。複数のAIモデルを使い分けたい場合に有利</li>
+                    <li><strong>Antigravity:</strong> ブラウザサブエージェントでテストを自動化したい、Google製品エコシステムを活用したい人向け</li>
+                </ul>
+                <p>今回のチュートリアルでは<strong>Cursor</strong>をメインに解説しますが、Antigravityも興味があれば試してみてください。</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Clasp -->
+        <section id="section5" class="section">
+            <h2><span class="material-icons">terminal</span>5. Clasp</h2>
+            
+            <p><strong>Clasp</strong> = Command Line Apps Script</p>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h4>これまでの開発</h4>
+                    <ol>
+                        <li>ブラウザでGASエディタを開く</li>
+                        <li>コードを書く</li>
+                        <li>保存して実行</li>
+                        <li>デプロイボタンをクリック</li>
+                    </ol>
+                </div>
+                <div class="comparison-item after">
+                    <h4>Claspを使うと</h4>
+                    <ol>
+                        <li><strong>Cursorでコードを書く</strong>（ローカルのパソコン）</li>
+                        <li><code>clasp push</code>でGASにアップロード</li>
+                        <li><code>clasp open</code>でブラウザで確認</li>
+                        <li><code>clasp deploy</code>でデプロイ</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card success">
+                <h4>✅ メリット</h4>
+                <ul>
+                    <li><strong>好きなエディターで開発</strong>できる（Cursor、VS Codeなど）</li>
+                    <li><strong>Gitでバージョン管理</strong>できる</li>
+                    <li><strong>複数人で同時開発</strong>できる</li>
+                    <li><strong>TypeScript</strong>も使える（型チェックで安全）</li>
+                    <li><strong>自動化</strong>しやすい（CI/CDと組み合わせ）</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>📦 セットアップ（簡単）</h4>
+                <ol class="step-list">
+                    <li><strong>Node.jsをインストール</strong><br>
+                        <a href="https://nodejs.org/" target="_blank">https://nodejs.org/</a> から最新版をダウンロード
+                    </li>
+                    <li><strong>Claspをインストール</strong>
+                        <div class="code-block">npm install -g @google/clasp</div>
+                    </li>
+                    <li><strong>Googleアカウントでログイン</strong>
+                        <div class="code-block">clasp login</div>
+                        ブラウザが開くので、Googleアカウントで認証
+                    </li>
+                    <li><strong>既存プロジェクトをダウンロード</strong>
+                        <div class="code-block">clasp clone &lt;スクリプトID&gt;</div>
+                        ※スクリプトIDはGASエディタのURLから取得
+                    </li>
+                    <li><strong>コード編集後、アップロード</strong>
+                        <div class="code-block">clasp push</div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card info">
+                <h4>💡 今回の開発フロー</h4>
+                <div class="flow-diagram">
+                    <div class="flow-item">1. Cursorで<br>コード編集</div>
+                    <span class="material-icons flow-arrow">arrow_forward</span>
+                    <div class="flow-item">2. Claspで<br>アップロード</div>
+                    <span class="material-icons flow-arrow">arrow_forward</span>
+                    <div class="flow-item">3. Gitに<br>コミット</div>
+                </div>
+                <p style="margin-top: 16px;"><strong>この3つのツールの組み合わせ</strong>が現代的なGAS開発です。</p>
+            </div>
+
+            <div class="card">
+                <h4>🔧 よく使うClaspコマンド</h4>
+                <div class="code-block"><span class="comment"># ログイン</span>
+clasp login
+
+<span class="comment"># 新規プロジェクト作成</span>
+clasp create --type standalone --title "マッチングアプリ"
+
+<span class="comment"># 既存プロジェクトをクローン</span>
+clasp clone &lt;scriptId&gt;
+
+<span class="comment"># ローカルの変更をGASにアップロード</span>
+clasp push
+
+<span class="comment"># GASの最新版をダウンロード</span>
+clasp pull
+
+<span class="comment"># ブラウザでGASエディタを開く</span>
+clasp open
+
+<span class="comment"># デプロイ</span>
+clasp deploy
+
+<span class="comment"># デプロイ一覧を表示</span>
+clasp deployments
+
+<span class="comment"># バージョン一覧を表示</span>
+clasp versions</div>
+            </div>
+        </section>
+
+        <!-- Section 6: Git/GitHub -->
+        <section id="section6" class="section">
+            <h2><span class="material-icons">source</span>6. GitとGitHub</h2>
+            
+            <h3 id="section6-1"><span class="material-icons">history</span>6.1. バージョン管理の重要性</h3>
+            
+            <p>皆さん、こんな経験ありませんか？</p>
+
+            <div class="card warning">
+                <h4>😱 バージョン管理がないと起こる悲劇</h4>
+                <ul>
+                    <li>コードを修正したら動かなくなった → <strong>元に戻したい</strong></li>
+                    <li>『最新版』『最新版2』『最終版』『最終版(本当)』というファイルが増殖</li>
+                    <li>誰がいつ何を変更したか分からない</li>
+                    <li>複数人で編集したら、お互いの変更が消えた</li>
+                </ul>
+            </div>
+
+            <div class="card success">
+                <p><strong>Gitは、これらの問題を解決する『時間を巻き戻せる魔法』</strong>です。</p>
+            </div>
+
+            <div class="card">
+                <h4>💔 ケーススタディ: マッチングアプリ開発の悲劇</h4>
+                <ul>
+                    <li><strong>月曜日:</strong> Aさんが『ユーザー登録機能』を追加</li>
+                    <li><strong>火曜日:</strong> Bさんが『マッチング機能』を追加</li>
+                    <li><strong>水曜日:</strong> Aさんの修正がBさんの修正を上書き → <strong>Bさんの作業が消失</strong></li>
+                    <li><strong>木曜日:</strong> バグ修正しようとしたら、どこを直せばいいか分からない</li>
+                    <li><strong>金曜日:</strong> 「月曜日の状態に戻したい...」→ <strong>不可能</strong></li>
+                </ul>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h4>Gitがないと</h4>
+                    <ul>
+                        <li>過去の状態に戻せない</li>
+                        <li>誰が何を変更したか不明</li>
+                        <li>複数人で衝突が起きる</li>
+                        <li>ファイル名で管理（混乱）</li>
+                    </ul>
+                </div>
+                <div class="comparison-item after">
+                    <h4>Gitがあれば</h4>
+                    <ul>
+                        <li>すべての変更履歴が残る</li>
+                        <li>誰がいつ何を変更したか一目瞭然</li>
+                        <li>任意の時点に戻せる</li>
+                        <li>複数人の変更を<strong>安全に統合</strong>できる</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card info">
+                <p><strong>Gitは保険です。</strong> 後悔する前に導入しましょう。</p>
+            </div>
+
+            <h3 id="section6-2"><span class="material-icons">cloud</span>6.2. Gitとは、GitHubとは</h3>
+            
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4>Git</h4>
+                    <p><strong>バージョン管理システム</strong>（ソフトウェア）</p>
+                    <ul>
+                        <li>あなたのパソコンにインストールして使う</li>
+                        <li>変更履歴を記録する</li>
+                        <li><strong>無料、オープンソース</strong></li>
+                        <li>Linus Torvaldsが開発（Linuxの生みの親）</li>
+                    </ul>
+                </div>
+                <div class="comparison-item">
+                    <h4>GitHub</h4>
+                    <p><strong>Gitのクラウドサービス</strong>（Webサイト）</p>
+                    <ul>
+                        <li>Gitのデータをオンラインに保存</li>
+                        <li>チームでコードを共有</li>
+                        <li><strong>バックアップ</strong> + <strong>コラボレーション</strong>機能</li>
+                        <li>Microsoft傘下（世界最大の開発者プラットフォーム）</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>💡 例えるなら</h4>
+                <ul>
+                    <li><strong>Git</strong> = Word（文書を作るソフト）</li>
+                    <li><strong>GitHub</strong> = Google Drive（文書を保存・共有するクラウド）</li>
+                </ul>
+            </div>
+
+            <div class="card info">
+                <h4>他の選択肢</h4>
+                <ul>
+                    <li><strong>GitLab:</strong> 自社サーバーに構築できる</li>
+                    <li><strong>Bitbucket:</strong> Atlassian製（Jiraと連携）</li>
+                </ul>
+                <p>でも、<span class="highlight">GitHubが業界標準</span>です（世界中の1億人以上の開発者が使用）</p>
+            </div>
+
+            <div class="card success">
+                <h4>今回の構成</h4>
+                <ol>
+                    <li>あなたのパソコン（ローカル）にGitをインストール</li>
+                    <li>GitHubにリポジトリ（プロジェクト）を作成</li>
+                    <li>Cursorで編集 → Gitでコミット → GitHubにプッシュ</li>
+                </ol>
+            </div>
+
+            <h3 id="section6-3"><span class="material-icons">menu_book</span>6.3. 用語</h3>
+            
+            <p>最初は用語が多くて混乱しますが、<strong>実際に使えば自然に覚えます</strong>。今は『こういう言葉がある』程度でOKです。</p>
+
+            <div class="term-list">
+                <div class="term-item">
+                    <dt>Repository（リポジトリ）</dt>
+                    <dd>
+                        <p>プロジェクト全体のフォルダ。コードと変更履歴をまとめた保管庫。</p>
+                        <div class="code-block">例: 「matching-app」リポジトリ
+  ├── Code.gs
+  ├── index.html
+  ├── style.css
+  └── .git/ (履歴データ)</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Local Repository（ローカルリポジトリ）</dt>
+                    <dd>
+                        <p>あなたのパソコン内のリポジトリ</p>
+                        <div class="code-block">C:\Users\YourName\matching-app</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Remote Repository（リモートリポジトリ）</dt>
+                    <dd>
+                        <p>GitHub上のリポジトリ。チーム全員で共有。</p>
+                        <div class="code-block">https://github.com/yourname/matching-app</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Branch（ブランチ）</dt>
+                    <dd>
+                        <p>開発の「枝分かれ」。本体に影響を与えずに新機能を開発。</p>
+                        <div class="code-block">main (本番用)
+  ├── feature/user-register (ユーザー登録機能)
+  ├── feature/matching (マッチング機能)
+  └── bugfix/login-error (ログインバグ修正)
+
+完成したらmainに統合(merge)</div>
+                        <div class="card info" style="margin-top: 12px;">
+                            <h5>ブランチの重要性</h5>
+                            <p><strong>mainブランチで直接開発すると:</strong><br>→ 途中で壊れた状態が本番に影響</p>
+                            <p><strong>ブランチを切って開発すると:</strong><br>→ 完成するまでmainは安全<br>→ 複数人が同時に別機能を開発できる</p>
+                        </div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Main（メイン）</dt>
+                    <dd>
+                        <p>本番用のブランチ。常に動作する状態を保つ。昔は「master」と呼ばれていた。</p>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Commit（コミット）</dt>
+                    <dd>
+                        <p>変更を記録すること。「セーブポイント」を作る。</p>
+                        <div class="code-block">[Commit 1] ユーザー登録画面のHTMLを作成
+[Commit 2] CSSでデザイン調整
+[Commit 3] バリデーション機能を追加
+[Commit 4] バグ修正
+
+→ 各コミットに戻れる</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Issue（イシュー）</dt>
+                    <dd>
+                        <p>タスク、バグ、要望を管理。「やることリスト」。</p>
+                        <div class="code-block">Issue #1: ユーザー登録機能を追加
+Issue #2: マッチング一覧が表示されないバグ
+Issue #3: デザインを改善したい
+
+→ 担当者をアサイン
+→ ラベルで分類 (bug, enhancement, question)
+→ 完了したらClose</div>
+                        <div class="card success" style="margin-top: 12px;">
+                            <p>コミットメッセージに <code>#1</code> と書くと、Issue #1と自動でリンクされます。<br><code>close #1</code> と書くと、コミット時にIssueが自動でクローズされます。</p>
+                        </div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Pull（プル）</dt>
+                    <dd>
+                        <p>リモートの変更をローカルに取得</p>
+                        <div class="code-block">GitHub → あなたのPC</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Pull Request（プルリクエスト / PR）</dt>
+                    <dd>
+                        <p>「この変更をmainに統合してください」というお願い。品質管理の要。</p>
+                        <div class="code-block">ブランチで開発完了
+  ↓
+Pull Request作成
+  ↓
+レビュー (コードチェック)
+  ↓
+承認 (Approve)
+  ↓
+Merge (統合)
+  ↓
+mainに反映</div>
+                        <div class="card warning" style="margin-top: 12px;">
+                            <p>Pull Requestは<strong>品質管理</strong>の要です。</p>
+                            <ul>
+                                <li>他の人にコードをレビューしてもらえる</li>
+                                <li>バグや改善点を指摘してもらえる</li>
+                                <li>チーム全体でコード品質を保てる</li>
+                            </ul>
+                            <p><strong>『勝手にmainに直接コミット』は禁止</strong>です。</p>
+                        </div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Merge（マージ）</dt>
+                    <dd>
+                        <p>ブランチを統合すること</p>
+                        <div class="code-block">main:    A → B → C
+                   ↓
+feature:       D → E
+                   ↓
+merge後: A → B → C → D → E</div>
+                    </dd>
+                </div>
+
+                <div class="term-item">
+                    <dt>Push（プッシュ）</dt>
+                    <dd>
+                        <p>ローカルの変更をリモートに送信</p>
+                        <div class="code-block">あなたのPC → GitHub</div>
+                    </dd>
+                </div>
+            </div>
+
+            <div class="card info">
+                <h4>Push と Pull の流れ</h4>
+                <ol>
+                    <li>Aさんが機能開発して <code>push</code></li>
+                    <li>Bさんが <code>pull</code> して最新版を取得</li>
+                    <li>Bさんが別機能開発して <code>push</code></li>
+                    <li>Aさんが <code>pull</code> して最新版を取得</li>
+                </ol>
+                <p>この繰り返しで、チーム全員が最新のコードを共有できます。</p>
+            </div>
+        </section>
+
+        <!-- Section 7: チーム開発 -->
+        <section id="section7" class="section">
+            <h2><span class="material-icons">group</span>7. Git/GitHubを活用したチーム開発</h2>
+            
+            <p>では、実際に<strong>マッチングアプリ</strong>を2人で開発する場合の流れを見てみましょう。</p>
+
+            <div class="card info">
+                <h4>登場人物</h4>
+                <ul>
+                    <li><strong>開発メンバー</strong>（あなた）: 機能を実装する人</li>
+                    <li><strong>レビュワー</strong>（先輩）: コードをチェックして承認する人</li>
+                </ul>
+            </div>
+
+            <h3 id="section7-1"><span class="material-icons">code</span>7.1. 開発メンバー</h3>
+            
+            <div class="card">
+                <h4>📋 開発メンバーの作業フロー</h4>
+                
+                <h5>ステップ1: Issue確認</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+GitHub Issue #5:
+タイトル: ユーザー登録機能を実装
+説明: 名前、メールアドレス、年齢、性別を入力できるフォームを作成
+担当: あなた
+ラベル: feature, high-priority</div>
+
+                <h5>ステップ2: ブランチ作成</h5>
+                <div class="code-block"><span class="comment"># 最新のmainを取得</span>
+git pull origin main
+
+<span class="comment"># 新しいブランチを作成</span>
+git checkout -b feature/user-register</div>
+                
+                <div class="card success" style="margin-top: 12px;">
+                    <p><strong>ブランチ名はわかりやすく:</strong></p>
+                    <p>✅ 良い例:</p>
+                    <ul>
+                        <li><code>feature/user-register</code> (機能)</li>
+                        <li><code>bugfix/login-error</code> (バグ修正)</li>
+                        <li><code>improve/ui-design</code> (改善)</li>
+                    </ul>
+                    <p>❌ 悪い例:</p>
+                    <ul>
+                        <li><code>test</code> (何のテスト?)</li>
+                        <li><code>my-branch</code> (何の機能?)</li>
+                    </ul>
+                </div>
+
+                <h5>ステップ3: コード実装</h5>
+                <div class="code-block"><span class="comment">&lt;!-- index.html --&gt;</span>
+<span class="keyword">&lt;div</span> <span class="string">class="register-form"</span><span class="keyword">&gt;</span>
+  <span class="keyword">&lt;h2&gt;</span>ユーザー登録<span class="keyword">&lt;/h2&gt;</span>
+  <span class="keyword">&lt;input</span> <span class="string">type="text"</span> <span class="string">id="name"</span> <span class="string">placeholder="名前"</span> <span class="string">required</span><span class="keyword">&gt;</span>
+  <span class="keyword">&lt;input</span> <span class="string">type="email"</span> <span class="string">id="email"</span> <span class="string">placeholder="メールアドレス"</span> <span class="string">required</span><span class="keyword">&gt;</span>
+  <span class="keyword">&lt;input</span> <span class="string">type="number"</span> <span class="string">id="age"</span> <span class="string">placeholder="年齢"</span> <span class="string">min="18"</span> <span class="string">required</span><span class="keyword">&gt;</span>
+  <span class="keyword">&lt;select</span> <span class="string">id="gender"</span> <span class="string">required</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;option</span> <span class="string">value=""</span><span class="keyword">&gt;</span>性別を選択<span class="keyword">&lt;/option&gt;</span>
+    <span class="keyword">&lt;option</span> <span class="string">value="male"</span><span class="keyword">&gt;</span>男性<span class="keyword">&lt;/option&gt;</span>
+    <span class="keyword">&lt;option</span> <span class="string">value="female"</span><span class="keyword">&gt;</span>女性<span class="keyword">&lt;/option&gt;</span>
+  <span class="keyword">&lt;/select&gt;</span>
+  <span class="keyword">&lt;button</span> <span class="string">onclick="submitRegister()"</span><span class="keyword">&gt;</span>登録<span class="keyword">&lt;/button&gt;</span>
+<span class="keyword">&lt;/div&gt;</span>
+
+<span class="keyword">&lt;script&gt;</span>
+<span class="keyword">function</span> <span class="function">submitRegister</span>() {
+  <span class="keyword">const</span> data = {
+    name: <span class="keyword">document</span>.<span class="function">getElementById</span>(<span class="string">'name'</span>).value,
+    email: <span class="keyword">document</span>.<span class="function">getElementById</span>(<span class="string">'email'</span>).value,
+    age: <span class="keyword">document</span>.<span class="function">getElementById</span>(<span class="string">'age'</span>).value,
+    gender: <span class="keyword">document</span>.<span class="function">getElementById</span>(<span class="string">'gender'</span>).value
+  };
+  
+  google.script.run
+    .<span class="function">withSuccessHandler</span>(() => <span class="function">alert</span>(<span class="string">'登録しました'</span>))
+    .<span class="function">registerUser</span>(data);
+}
+<span class="keyword">&lt;/script&gt;</span></div>
+
+                <div class="code-block"><span class="comment">// Code.gs</span>
+<span class="keyword">function</span> <span class="function">registerUser</span>(data) {
+  <span class="comment">// 入力チェック</span>
+  <span class="keyword">if</span> (!data.name || !data.email || !data.age || !data.gender) {
+    <span class="keyword">throw new</span> Error(<span class="string">'すべての項目を入力してください'</span>);
+  }
+  
+  <span class="comment">// スプレッドシートに保存</span>
+  <span class="keyword">const</span> ss = SpreadsheetApp.<span class="function">openById</span>(<span class="string">'your-spreadsheet-id'</span>);
+  <span class="keyword">const</span> sheet = ss.<span class="function">getSheetByName</span>(<span class="string">'ユーザー'</span>);
+  
+  sheet.<span class="function">appendRow</span>([
+    <span class="keyword">new</span> Date(),
+    data.email,
+    data.name,
+    data.age,
+    data.gender
+  ]);
+  
+  <span class="keyword">return</span> { success: <span class="keyword">true</span> };
+}</div>
+
+                <h5>ステップ4: Commit</h5>
+                <div class="code-block"><span class="comment"># 変更ファイルを確認</span>
+git status
+
+<span class="comment"># ファイルをステージング</span>
+git add index.html Code.gs
+
+<span class="comment"># コミット (メッセージは明確に)</span>
+git commit -m "ユーザー登録機能を実装 #5"</div>
+
+                <div class="card success" style="margin-top: 12px;">
+                    <p><strong>良いコミットメッセージ:</strong></p>
+                    <ul>
+                        <li>✅ <code>ユーザー登録機能を実装 #5</code></li>
+                        <li>✅ <code>ログインバグを修正 #12</code></li>
+                        <li>✅ <code>UIデザインを改善</code></li>
+                    </ul>
+                    <p><strong>悪いコミットメッセージ:</strong></p>
+                    <ul>
+                        <li>❌ <code>update</code> (何を?)</li>
+                        <li>❌ <code>fix</code> (何を修正?)</li>
+                        <li>❌ <code>test</code> (テスト?)</li>
+                    </ul>
+                    <p>コミットメッセージに <code>#5</code> と書くと、Issue #5と自動リンクされます。</p>
+                </div>
+
+                <h5>ステップ5: Push</h5>
+                <div class="code-block"><span class="comment"># リモートにプッシュ</span>
+git push origin feature/user-register</div>
+
+                <h5>ステップ6: Pull Request作成</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+GitHubで:
+1. "Compare & pull request" ボタンをクリック
+2. タイトル: 「ユーザー登録機能を実装」
+3. 説明:
+   - Issue #5 に対応
+   - 実装内容: 名前、メール、年齢、性別の登録フォーム
+   - バリデーション実装済み
+   - スプレッドシートに保存される
+   - テスト済み（正常系・異常系）
+4. レビュワーを指定 (先輩を選択)
+5. "Create pull request" をクリック</div>
+
+                <div class="card info" style="margin-top: 12px;">
+                    <p><strong>Pull Requestの説明は丁寧に:</strong></p>
+                    <ul>
+                        <li>何を実装したか</li>
+                        <li>どうテストしたか</li>
+                        <li>スクリーンショット（UIの場合）</li>
+                        <li>懸念点があれば記載</li>
+                    </ul>
+                    <p>レビュワーが理解しやすいほど、承認が早くなります。</p>
+                </div>
+            </div>
+
+            <h3 id="section7-2"><span class="material-icons">rate_review</span>7.2. レビュワー</h3>
+            
+            <div class="card">
+                <h4>👀 レビュワーの作業フロー</h4>
+                
+                <h5>ステップ1: PR確認</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+通知: 「○○さんがPull Requestを作成しました」
+
+PRページで確認:
+- タイトル: ユーザー登録機能を実装
+- 変更ファイル: index.html, Code.gs
+- コミット数: 3件
+- 追加行数: +89, 削除行数: -0</div>
+
+                <h5>ステップ2: コードレビュー (Review Changes)</h5>
+                
+                <div class="card info" style="margin-top: 12px;">
+                    <p><strong>コードレビューで見るポイント:</strong></p>
+                    
+                    <p><strong>1. 機能的に正しいか</strong></p>
+                    <ul>
+                        <li>仕様通りに動くか</li>
+                        <li>エラー処理はあるか</li>
+                        <li>エッジケース（境界値）をカバーしているか</li>
+                    </ul>
+                    
+                    <p><strong>2. コードの質</strong></p>
+                    <ul>
+                        <li>読みやすいか</li>
+                        <li>無駄な重複はないか</li>
+                        <li>命名は適切か（変数名、関数名）</li>
+                        <li>コメントは適切か</li>
+                    </ul>
+                    
+                    <p><strong>3. セキュリティ</strong></p>
+                    <ul>
+                        <li>権限チェックはあるか</li>
+                        <li>不正な入力をブロックできるか</li>
+                        <li>個人情報の扱いは適切か</li>
+                    </ul>
+                    
+                    <p><strong>4. パフォーマンス</strong></p>
+                    <ul>
+                        <li>無駄な処理はないか</li>
+                        <li>大量データでも動作するか</li>
+                    </ul>
+                </div>
+
+                <h5>レビューコメント例</h5>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+index.html 12行目:
+💬 入力チェックがフロントエンドだけでは不十分では?
+   JavaScriptを無効にされると素通りしてしまいます。
+   バックエンド(Code.gs)でも検証を追加しましょう。
+
+Code.gs 15行目:
+💬 エラーハンドリングを追加しましょう
+   スプレッドシートが見つからない場合の処理が必要です。
+   try-catchで囲むことをお勧めします。
+
+Code.gs 20行目:
+👍 appendRowの使い方、完璧です！
+
+全体:
+✨ 機能としてはOKですが、上記2点を修正してください。
+   セキュリティ面での改善も検討しましょう。</div>
+
+                <h5>ステップ3: Approve または Request Changes</h5>
+                
+                <div class="comparison">
+                    <div class="comparison-item after">
+                        <h4>✅ 承認 (Approve)</h4>
+                        <div class="code-block" style="background: #E8F5E9; color: #2E7D32;">
+コメント:
+「問題ありません。お疲れ様でした！
+バリデーション処理が丁寧で素晴らしいです。」
+
+→ "Approve" を選択</div>
+                    </div>
+                    <div class="comparison-item before">
+                        <h4>🔄 修正依頼 (Request Changes)</h4>
+                        <div class="code-block" style="background: #FFF3E0; color: #E65100;">
+コメント:
+「セキュリティとエラー処理の改善が必要です。
+上記コメントの2点を修正してください。」
+
+→ "Request Changes" を選択</div>
+                    </div>
+                </div>
+
+                <div class="card success" style="margin-top: 16px;">
+                    <p><strong>Request Changesは決して責めるものではありません。</strong></p>
+                    <ul>
+                        <li>コードの品質を高めるための協力</li>
+                        <li>お互いに学び合う機会</li>
+                        <li>バグを事前に防ぐ保険</li>
+                    </ul>
+                    <p>むしろ<strong>何も指摘がないほうが不自然</strong>です。</p>
+                </div>
+
+                <h5>ステップ4: Merge</h5>
+                
+                <p><strong>開発メンバーが修正 → 再Push → レビュワーが再確認 → 承認</strong></p>
+
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+GitHubで:
+1. "Merge pull request" ボタンをクリック
+2. マージ方法を選択:
+   - ✅ Merge commit (推奨): すべての履歴を保持
+   - Squash and merge: コミットを1つにまとめる
+   - Rebase and merge: 線形な履歴にする
+3. "Confirm merge" をクリック
+4. ブランチを削除 (オプション)</div>
+
+                <h5>ステップ5: Push (デプロイ)</h5>
+                
+                <p>mainにマージされたら、<strong>本番環境にデプロイ</strong>します。</p>
+
+                <div class="code-block"><span class="comment"># mainブランチに切り替え</span>
+git checkout main
+
+<span class="comment"># 最新を取得</span>
+git pull origin main
+
+<span class="comment"># GASにアップロード</span>
+clasp push
+
+<span class="comment"># (必要に応じて) 新しいバージョンをデプロイ</span>
+clasp deploy -d "ユーザー登録機能を追加"</div>
+
+                <p>これで、<strong>ユーザーが新機能を使えるようになります！</strong></p>
+            </div>
+        </section>
+
+        <!-- Section 8: Project機能 -->
+        <section id="section8" class="section">
+            <h2><span class="material-icons">dashboard</span>8. Project機能 (GitHub)</h2>
+            
+            <p><strong>GitHub Projects</strong>は、IssueとPull Requestを<span class="highlight">かんばんボード</span>で管理できる機能です。</p>
+
+            <div class="card">
+                <h4>マッチングアプリ開発のプロジェクトボード例</h4>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+┌─────────────┬─────────────┬─────────────┬─────────────┐
+│   To Do     │ In Progress │  In Review  │    Done     │
+├─────────────┼─────────────┼─────────────┼─────────────┤
+│ #6 検索機能 │ #5 ユーザー │ #4 いいね   │ #1 プロジェ │
+│             │   登録      │   機能      │   クト設定  │
+│ #7 通知機能 │             │             │ #2 DB設計   │
+│             │             │             │ #3 UI設計   │
+│ #8 メッセー │             │             │             │
+│   ジ機能    │             │             │             │
+└─────────────┴─────────────┴─────────────┴─────────────┘</div>
+            </div>
+
+            <div class="card success">
+                <h4>使い方</h4>
+                <ol class="step-list">
+                    <li><strong>Projects作成</strong> (リポジトリ内)<br>
+                        "Projects" タブ → "New project" → "Board" を選択
+                    </li>
+                    <li><strong>Issueを追加</strong><br>
+                        右上の "+" ボタンから既存のIssueを追加、または新規作成
+                    </li>
+                    <li><strong>ステータスを更新</strong><br>
+                        ドラッグ&ドロップでカードを移動
+                    </li>
+                    <li><strong>担当者・期限を設定</strong><br>
+                        カードをクリックして詳細を編集
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card info">
+                <h4>メリット</h4>
+                <ul>
+                    <li><strong>進捗が一目瞭然</strong> - 誰が何をやっているか分かる</li>
+                    <li><strong>優先順位をつけやすい</strong> - To Doの上から順に着手</li>
+                    <li><strong>ボトルネックを発見</strong> - "In Review"に溜まっていたら要注意</li>
+                    <li><strong>モチベーション向上</strong> - "Done"に移動する達成感</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>スプリント管理も可能</h4>
+                <div class="code-block" style="background: white; color: #333; border: 1px solid #ddd;">
+第1週（2026/01/13 - 2026/01/19）:
+  - #1 プロジェクト設定
+  - #2 DB設計
+  - #3 UI設計
+
+第2週（2026/01/20 - 2026/01/26）:
+  - #4 いいね機能
+  - #5 ユーザー登録機能
+
+第3週（2026/01/27 - 2026/02/02）:
+  - #6 検索機能
+  - #7 通知機能
+  - #8 メッセージ機能</div>
+            </div>
+
+            <div class="card success">
+                <p>これで、<strong>プロジェクト管理とコード管理が一体化</strong>します。</p>
+                <p>タスク管理ツール（Trello、Asanaなど）を別途使う必要がなくなり、GitHubだけで完結できます。</p>
+            </div>
+        </section>
+
+        <!-- まとめ -->
+        <section class="section">
+            <h2><span class="material-icons">check_circle</span>まとめ</h2>
+            
+            <div class="card success">
+                <h4>🎉 お疲れ様でした！</h4>
+                <p>今日は盛りだくさんでしたが、<strong>これがWebアプリ開発の全体像</strong>です。</p>
+            </div>
+
+            <div class="card">
+                <h4>📚 復習</h4>
+                
+                <h5>1. Webアプリの構造</h5>
+                <ul>
+                    <li>HTML（構造） + CSS（見た目） + JavaScript（動き）</li>
+                    <li>フロントエンド（ブラウザ）とバックエンド（サーバー）</li>
+                </ul>
+                
+                <h5>2. GAS Webアプリ</h5>
+                <ul>
+                    <li><code>.gs</code>ファイル = バックエンド（サーバー側）</li>
+                    <li><code>.html</code>内の<code>&lt;script&gt;</code> = フロントエンド（ブラウザ側）</li>
+                    <li>スプレッドシート = データベース</li>
+                </ul>
+                
+                <h5>3. 開発環境</h5>
+                <ul>
+                    <li><strong>Cursor / Antigravity</strong> = AIエディター</li>
+                    <li><strong>Clasp</strong> = ローカル開発</li>
+                    <li><strong>Git/GitHub</strong> = バージョン管理・チーム開発</li>
+                </ul>
+                
+                <h5>4. 開発フロー</h5>
+                <ol>
+                    <li>Issue作成（タスク定義）</li>
+                    <li>ブランチ作成</li>
+                    <li>コード実装</li>
+                    <li>Commit → Push</li>
+                    <li>Pull Request作成</li>
+                    <li>コードレビュー</li>
+                    <li>Merge → デプロイ</li>
+                </ol>
+            </div>
+
+            <div class="card info">
+                <h4>🚀 次のステップ</h4>
+                <ol class="step-list">
+                    <li><strong>Cursor、Git、Claspをインストール</strong><br>
+                        実際に環境を構築してみましょう
+                    </li>
+                    <li><strong>簡単なWebアプリを作ってみる</strong><br>
+                        「Hello World」から始めて、徐々に機能を追加
+                    </li>
+                    <li><strong>GitHubで管理してみる</strong><br>
+                        リポジトリ作成、コミット、プッシュを体験
+                    </li>
+                    <li><strong>チームで1つの機能を作ってみる</strong><br>
+                        ブランチ、PR、レビューの流れを実践
+                    </li>
+                    <li><strong>マッチングアプリを作ってみる</strong><br>
+                        今日学んだすべてを活用して本格的なアプリを開発
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card warning">
+                <h4>⚠️ 質問・相談はいつでもどうぞ！</h4>
+                <p>分からないことがあれば、遠慮なく聞いてください。<br>
+                最初は誰でも初心者です。失敗を恐れず、どんどん試してみましょう。</p>
+            </div>
+
+            <div class="card success">
+                <h4>🎯 最後に</h4>
+                <p>AIの時代だからこそ、<strong>『何をどう作るか』を指示できる知識</strong>が重要です。</p>
+                <p>今日学んだ知識があれば、CursorやChatGPT、Antigravityに的確な指示を出せます。</p>
+                <p><strong>一緒に素晴らしい社内アプリを作りましょう！</strong></p>
+            </div>
+        </section>
+
+        <!-- 補足資料 -->
+        <section class="section">
+            <h2><span class="material-icons">description</span>補足資料 - よく使うコマンド集</h2>
+            
+            <h3>Git コマンド</h3>
+            <div class="code-block"><span class="comment"># 初期設定</span>
+git config --global user.name <span class="string">"Your Name"</span>
+git config --global user.email <span class="string">"you@example.com"</span>
+
+<span class="comment"># リポジトリ操作</span>
+git clone &lt;URL&gt;              <span class="comment"># リモートをクローン</span>
+git pull origin main         <span class="comment"># リモートから取得</span>
+git push origin &lt;branch&gt;     <span class="comment"># リモートに送信</span>
+
+<span class="comment"># ブランチ操作</span>
+git branch                   <span class="comment"># ブランチ一覧</span>
+git checkout -b &lt;branch&gt;     <span class="comment"># 新規ブランチ作成＆切替</span>
+git checkout &lt;branch&gt;        <span class="comment"># ブランチ切替</span>
+git branch -d &lt;branch&gt;       <span class="comment"># ブランチ削除</span>
+
+<span class="comment"># コミット操作</span>
+git status                   <span class="comment"># 変更状況確認</span>
+git add &lt;file&gt;               <span class="comment"># ステージング</span>
+git add .                    <span class="comment"># 全ファイルステージング</span>
+git commit -m <span class="string">"message"</span>      <span class="comment"># コミット</span>
+
+<span class="comment"># その他</span>
+git log                      <span class="comment"># 履歴確認</span>
+git log --oneline            <span class="comment"># 履歴を1行で表示</span>
+git diff                     <span class="comment"># 差分確認</span>
+git reset --hard HEAD        <span class="comment"># 変更を破棄</span>
+git stash                    <span class="comment"># 変更を一時退避</span>
+git stash pop                <span class="comment"># 退避した変更を戻す</span></div>
+
+            <h3>Clasp コマンド</h3>
+            <div class="code-block"><span class="comment"># 認証</span>
+clasp login                  <span class="comment"># ログイン</span>
+clasp logout                 <span class="comment"># ログアウト</span>
+
+<span class="comment"># プロジェクト管理</span>
+clasp create                 <span class="comment"># 新規プロジェクト</span>
+clasp clone &lt;scriptId&gt;       <span class="comment"># 既存プロジェクトをクローン</span>
+clasp list                   <span class="comment"># プロジェクト一覧</span>
+
+<span class="comment"># 開発</span>
+clasp push                   <span class="comment"># アップロード</span>
+clasp pull                   <span class="comment"># ダウンロード</span>
+clasp open                   <span class="comment"># ブラウザで開く</span>
+clasp logs                   <span class="comment"># ログを表示</span>
+
+<span class="comment"># デプロイ</span>
+clasp deploy                 <span class="comment"># デプロイ</span>
+clasp deploy -d <span class="string">"説明"</span>       <span class="comment"># 説明付きでデプロイ</span>
+clasp deployments            <span class="comment"># デプロイ一覧を表示</span>
+clasp undeploy &lt;deployId&gt;    <span class="comment"># デプロイを取り消し</span>
+
+<span class="comment"># バージョン管理</span>
+clasp versions               <span class="comment"># バージョン一覧を表示</span>
+clasp version                <span class="comment"># 新しいバージョンを作成</span></div>
+
+            <div class="card info">
+                <p>このページをブックマークして、開発時に参照してください！</p>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 GAS Webアプリ開発入門講座</p>
+        <p>Made with ❤️ for internal training</p>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop">
+        <span class="material-icons">arrow_upward</span>
+    </div>
+
+    <script>
+        // スムーズスクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // トップへ戻るボタン
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>

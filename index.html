@@ -75,6 +75,7 @@
                         <ul>
                             <li><a href="#section7-1">7.1. 開発メンバーのフロー</a></li>
                             <li><a href="#section7-2">7.2. レビュワーのフロー</a></li>
+                            <li><a href="#section7-3">7.3. 3人のチーム開発</a></li>
                         </ul>
                     </div>
                     <div class="toc-item">
@@ -862,7 +863,7 @@ message_id (主キー) | match_id (外部キー) | sender_id (外部キー) | me
                 <div>
                     <h4>MongoDB（ドキュメント型）</h4>
                     <p>JSONのような形式でデータを保存。柔軟な構造が特徴</p>
-                    <div class="code-block">{
+                    <div class="code-block language-javascript">{
   "user_id": "user123",
   "name": "田中太郎",
   "interests": ["カメラ", "旅行"],
@@ -1166,15 +1167,14 @@ clasp versions</div>
             
             <h3 id="section6-1"><span class="material-icons">history</span>6.1. バージョン管理の重要性</h3>
             
-            <p>皆さん、こんな経験ありませんか？</p>
+            <p>こんな経験ありませんか？</p>
 
             <div class="card warning">
                 <h4>😱 バージョン管理がないと起こる悲劇</h4>
                 <ul>
                     <li>コードを修正したら動かなくなった → <strong>元に戻したい</strong></li>
-                    <li>『最新版』『最新版2』『最終版』『最終版(本当)』というファイルが増殖</li>
-                    <li>誰がいつ何を変更したか分からない</li>
-                    <li>複数人で編集したら、お互いの変更が消えた</li>
+                    <li>沼にハマって抜け出せない。 → <strong>動いていた時のコードに戻したい</strong></li>
+                    <li>複数人で作業しているケースで、誰がいつ何を変更したか分からない → <strong>誰がどんな変更をしたかを知りたい</strong></li>
                 </ul>
             </div>
 
@@ -1187,8 +1187,8 @@ clasp versions</div>
                 <ul>
                     <li><strong>月曜日:</strong> Aさんが『ユーザー登録機能』を追加</li>
                     <li><strong>火曜日:</strong> Bさんが『マッチング機能』を追加</li>
-                    <li><strong>水曜日:</strong> Aさんの修正がBさんの修正を上書き → <strong>Bさんの作業が消失</strong></li>
-                    <li><strong>木曜日:</strong> バグ修正しようとしたら、どこを直せばいいか分からない</li>
+                    <li><strong>水曜日:</strong> Aさんの修正がBさんの修正を間違えて上書き → <strong>Bさんの作業が消失</strong></li>
+                    <li><strong>木曜日:</strong> バグ修正しようとしたが、泥沼にハマってしまい抜け出せなくなった...</li>
                     <li><strong>金曜日:</strong> 「月曜日の状態に戻したい...」→ <strong>不可能</strong></li>
                 </ul>
             </div>
@@ -1200,13 +1200,12 @@ clasp versions</div>
                         <li>過去の状態に戻せない</li>
                         <li>誰が何を変更したか不明</li>
                         <li>複数人で衝突が起きる</li>
-                        <li>ファイル名で管理（混乱）</li>
                     </ul>
                 </div>
                 <div class="comparison-item after">
                     <h4>Gitがあれば</h4>
                     <ul>
-                        <li>すべての変更履歴が残る</li>
+                        <li><strong>すべての変更履歴が残る</strong></li>
                         <li>誰がいつ何を変更したか一目瞭然</li>
                         <li>任意の時点に戻せる</li>
                         <li>複数人の変更を<strong>安全に統合</strong>できる</li>
@@ -1531,7 +1530,7 @@ git checkout -b feature/user-register</div>
 git status
 
 <span class="comment"># ファイルをステージング</span>
-git add index.html Code.gs
+git add .
 
 <span class="comment"># コミット (メッセージは明確に)</span>
 git commit -m "ユーザー登録機能を実装 #5"</div>
@@ -1597,7 +1596,54 @@ PRページで確認:
 - コミット数: 3件
 - 追加行数: +89, 削除行数: -0</div>
 
-                <h5>ステップ2: コードレビュー (Review Changes)</h5>
+                <h5>ステップ2: ローカルでプルリクを検証</h5>
+                
+                <p>コードレビューだけでなく、<strong>実際にローカル環境で動作確認</strong>することも重要です。</p>
+                
+                <div class="code-block language-bash"><span class="comment"># 1. mainブランチに切り替え（現在のブランチを確認）</span>
+git checkout main
+
+<span class="comment"># 2. mainブランチを最新の状態に更新</span>
+git pull origin main
+
+<span class="comment"># 3. プルリクのブランチを取得（まだ切り替えない）</span>
+git fetch origin feature/user-register
+
+<span class="comment"># 4. プルリクのブランチに切り替えて検証</span>
+git checkout feature/user-register
+
+<span class="comment"># 5. ここで実際に動作確認</span>
+<span class="comment"># - clasp push でGASにアップロード</span>
+<span class="comment"># - ブラウザで動作確認</span>
+<span class="comment"># - エラーがないか確認</span>
+<span class="comment"># - 機能が正しく動くか確認</span>
+
+<span class="comment"># 6. 検証後、mainブランチに戻る</span>
+git checkout main
+
+<span class="comment"># 7. mainブランチを最新の状態に更新（念のため）</span>
+git pull origin main</div>
+
+                <div class="card info" style="margin-top: 12px;">
+                    <h5>💡 ローカル検証のポイント</h5>
+                    <ul>
+                        <li><strong>実際に動かしてみる</strong> - コードを見るだけでは分からない問題を発見できる</li>
+                        <li><strong>エラーログを確認</strong> - ブラウザのコンソールやGASのログをチェック</li>
+                        <li><strong>エッジケースをテスト</strong> - 異常な入力値や境界値でテスト</li>
+                        <li><strong>既存機能への影響を確認</strong> - 他の機能が壊れていないか確認</li>
+                    </ul>
+                </div>
+
+                <div class="card warning" style="margin-top: 12px;">
+                    <h5>⚠️ 注意点</h5>
+                    <ul>
+                        <li>検証用のブランチで作業するため、<strong>mainブランチは汚さない</strong></li>
+                        <li>検証後は必ず<code>git checkout main</code>でmainブランチに戻る</li>
+                        <li>検証用ブランチは削除してもOK（<code>git branch -d feature/user-register</code>）</li>
+                    </ul>
+                </div>
+
+                <h5>ステップ3: コードレビュー (Review Changes)</h5>
                 
                 <div class="card info" style="margin-top: 12px;">
                     <p><strong>コードレビューで見るポイント:</strong></p>
@@ -1650,7 +1696,7 @@ Code.gs 20行目:
 ✨ 機能としてはOKですが、上記2点を修正してください。
    セキュリティ面での改善も検討しましょう。</div>
 
-                <h5>ステップ3: Approve または Request Changes</h5>
+                <h5>ステップ4: Approve または Request Changes</h5>
                 
                 <div class="comparison">
                     <div class="comparison-item after">
@@ -1683,7 +1729,7 @@ Code.gs 20行目:
                     <p>むしろ<strong>何も指摘がないほうが不自然</strong>です。</p>
                 </div>
 
-                <h5>ステップ4: Merge</h5>
+                <h5>ステップ5: Merge</h5>
                 
                 <p><strong>開発メンバーが修正 → 再Push → レビュワーが再確認 → 承認</strong></p>
 
@@ -1697,7 +1743,7 @@ GitHubで:
 3. "Confirm merge" をクリック
 4. ブランチを削除 (オプション)</div>
 
-                <h5>ステップ5: Push (デプロイ)</h5>
+                <h5>ステップ6: Push (デプロイ)</h5>
                 
                 <p>mainにマージされたら、<strong>本番環境にデプロイ</strong>します。</p>
 
@@ -1714,6 +1760,256 @@ clasp push
 clasp deploy -d "ユーザー登録機能を追加"</div>
 
                 <p>これで、<strong>ユーザーが新機能を使えるようになります！</strong></p>
+            </div>
+
+            <h3 id="section7-3"><span class="material-icons">groups</span>7.3. 3人のチーム開発</h3>
+            
+            <p>実際のチーム開発では、<strong>3人以上</strong>で作業することが多いです。ここでは、<span class="highlight">3人のチーム</span>での開発フローを3つのケースに分けて説明します。</p>
+
+            <div class="card info">
+                <h4>📋 登場人物</h4>
+                <ul>
+                    <li><strong>開発者1 / 開発者2</strong>: 機能を実装する人</li>
+                    <li><strong>レビュワー</strong>: コードをチェックして承認する人</li>
+                    <li><strong>レビュワー1 / レビュワー2</strong>: 複数のレビュワーがいる場合</li>
+                </ul>
+            </div>
+
+            <h4>ケース1: 開発者 → レビュワー（2人で完結）</h4>
+            
+            <div class="card">
+                <h5>👤 開発者のフロー</h5>
+                <ol class="step-list">
+                    <li><strong>Issue確認</strong> - GitHubで担当のIssueを確認</li>
+                    <li><strong>ブランチ作成</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git checkout -b feature/user-register</div>
+                    </li>
+                    <li><strong>コード実装</strong> - 機能を実装</li>
+                    <li><strong>Commit & Push</strong>
+                        <div class="code-block language-bash">git add .
+git commit -m "ユーザー登録機能を実装 #5"
+git push origin feature/user-register</div>
+                    </li>
+                    <li><strong>Pull Request作成</strong> - レビュワーを指定してPR作成</li>
+                    <li><strong>修正対応</strong> - レビューコメントがあれば修正して再Push</li>
+                    <li><strong>マージ待ち</strong> - レビュワーの承認を待つ</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h5>👀 レビュワーのフロー</h5>
+                <ol class="step-list">
+                    <li><strong>PR確認</strong> - 通知を受け取ってPRを確認</li>
+                    <li><strong>ローカル検証</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git fetch origin feature/user-register
+git checkout feature/user-register
+<span class="comment"># 動作確認</span>
+git checkout main
+git pull origin main</div>
+                    </li>
+                    <li><strong>コードレビュー</strong> - コードをチェックしてコメント</li>
+                    <li><strong>承認 or 修正依頼</strong> - Approve または Request Changes</li>
+                    <li><strong>マージ</strong> - 承認後、GitHubでマージ</li>
+                    <li><strong>デプロイ</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+clasp push
+clasp deploy -d "ユーザー登録機能を追加"</div>
+                    </li>
+                </ol>
+            </div>
+
+            <h4>ケース2: 開発者 → レビュワー1 → レビュワー2（3人で完結）</h4>
+            
+            <p>より厳格な品質管理が必要な場合、<strong>2段階のレビュー</strong>を行います。</p>
+
+            <div class="card">
+                <h5>👤 開発者のフロー</h5>
+                <ol class="step-list">
+                    <li><strong>Issue確認</strong> - GitHubで担当のIssueを確認</li>
+                    <li><strong>ブランチ作成</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git checkout -b feature/user-register</div>
+                    </li>
+                    <li><strong>コード実装</strong> - 機能を実装</li>
+                    <li><strong>Commit & Push</strong>
+                        <div class="code-block language-bash">git add .
+git commit -m "ユーザー登録機能を実装 #5"
+git push origin feature/user-register</div>
+                    </li>
+                    <li><strong>Pull Request作成</strong> - <strong>レビュワー1とレビュワー2の両方</strong>を指定</li>
+                    <li><strong>修正対応</strong> - レビューコメントがあれば修正して再Push</li>
+                    <li><strong>マージ待ち</strong> - <strong>両方のレビュワー</strong>の承認を待つ</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h5>👀 レビュワー1のフロー（1次レビュー）</h5>
+                <ol class="step-list">
+                    <li><strong>PR確認</strong> - 通知を受け取ってPRを確認</li>
+                    <li><strong>ローカル検証</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git fetch origin feature/user-register
+git checkout feature/user-register
+<span class="comment"># 動作確認</span>
+git checkout main
+git pull origin main</div>
+                    </li>
+                    <li><strong>コードレビュー</strong> - コードをチェックしてコメント</li>
+                    <li><strong>承認 or 修正依頼</strong> - Approve または Request Changes</li>
+                    <li><strong>レビュワー2の承認待ち</strong> - 自分の承認後、レビュワー2の承認を待つ</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h5>👀 レビュワー2のフロー（2次レビュー）</h5>
+                <ol class="step-list">
+                    <li><strong>PR確認</strong> - レビュワー1が承認したPRを確認</li>
+                    <li><strong>ローカル検証</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git fetch origin feature/user-register
+git checkout feature/user-register
+<span class="comment"># 動作確認（レビュワー1の指摘が反映されているかも確認）</span>
+git checkout main
+git pull origin main</div>
+                    </li>
+                    <li><strong>コードレビュー</strong> - コードをチェックしてコメント</li>
+                    <li><strong>承認 or 修正依頼</strong> - Approve または Request Changes</li>
+                    <li><strong>マージ</strong> - 承認後、GitHubでマージ（レビュワー2がマージ権限を持つ場合）</li>
+                    <li><strong>デプロイ</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+clasp push
+clasp deploy -d "ユーザー登録機能を追加"</div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card info" style="margin-top: 16px;">
+                <h5>💡 2段階レビューのメリット</h5>
+                <ul>
+                    <li><strong>品質の向上</strong> - 複数の視点でチェックできる</li>
+                    <li><strong>知識の共有</strong> - レビュワー同士で学び合える</li>
+                    <li><strong>リスクの低減</strong> - 重要な機能ほど慎重にチェック</li>
+                </ul>
+            </div>
+
+            <h4>ケース3: 開発者1 → レビュワー、開発者2 → レビュワー（3人で完結）</h4>
+            
+            <p>2人の開発者が<strong>同時に別の機能</strong>を開発し、1人のレビュワーが両方をレビューするケースです。</p>
+
+            <div class="card">
+                <h5>👤 開発者1のフロー（機能Aを担当）</h5>
+                <ol class="step-list">
+                    <li><strong>Issue確認</strong> - Issue #5「ユーザー登録機能」を確認</li>
+                    <li><strong>ブランチ作成</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git checkout -b feature/user-register</div>
+                    </li>
+                    <li><strong>コード実装</strong> - ユーザー登録機能を実装</li>
+                    <li><strong>Commit & Push</strong>
+                        <div class="code-block language-bash">git add .
+git commit -m "ユーザー登録機能を実装 #5"
+git push origin feature/user-register</div>
+                    </li>
+                    <li><strong>Pull Request作成</strong> - レビュワーを指定してPR作成</li>
+                    <li><strong>修正対応</strong> - レビューコメントがあれば修正して再Push</li>
+                    <li><strong>マージ待ち</strong> - レビュワーの承認を待つ</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h5>👤 開発者2のフロー（機能Bを担当）</h5>
+                <ol class="step-list">
+                    <li><strong>Issue確認</strong> - Issue #6「マッチング機能」を確認</li>
+                    <li><strong>ブランチ作成</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+git checkout -b feature/matching</div>
+                    </li>
+                    <li><strong>コード実装</strong> - マッチング機能を実装</li>
+                    <li><strong>Commit & Push</strong>
+                        <div class="code-block language-bash">git add .
+git commit -m "マッチング機能を実装 #6"
+git push origin feature/matching</div>
+                    </li>
+                    <li><strong>Pull Request作成</strong> - レビュワーを指定してPR作成</li>
+                    <li><strong>修正対応</strong> - レビューコメントがあれば修正して再Push</li>
+                    <li><strong>マージ待ち</strong> - レビュワーの承認を待つ</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h5>👀 レビュワーのフロー（両方のPRをレビュー）</h5>
+                <ol class="step-list">
+                    <li><strong>PR確認</strong> - 開発者1と開発者2の両方のPRを確認</li>
+                    <li><strong>優先順位を決める</strong> - どちらを先にレビューするか決定</li>
+                    <li><strong>PR1をレビュー</strong>（例: 開発者1のPR）
+                        <div class="code-block language-bash"><span class="comment"># 開発者1のPRを検証</span>
+git checkout main
+git pull origin main
+git fetch origin feature/user-register
+git checkout feature/user-register
+<span class="comment"># 動作確認</span>
+git checkout main
+git pull origin main</div>
+                        <ul>
+                            <li>コードレビュー</li>
+                            <li>承認 or 修正依頼</li>
+                        </ul>
+                    </li>
+                    <li><strong>PR2をレビュー</strong>（例: 開発者2のPR）
+                        <div class="code-block language-bash"><span class="comment"># 開発者2のPRを検証</span>
+git checkout main
+git pull origin main
+git fetch origin feature/matching
+git checkout feature/matching
+<span class="comment"># 動作確認</span>
+git checkout main
+git pull origin main</div>
+                        <ul>
+                            <li>コードレビュー</li>
+                            <li>承認 or 修正依頼</li>
+                        </ul>
+                    </li>
+                    <li><strong>マージ</strong> - 承認後、それぞれのPRをマージ</li>
+                    <li><strong>デプロイ</strong>
+                        <div class="code-block language-bash">git checkout main
+git pull origin main
+clasp push
+clasp deploy -d "ユーザー登録機能とマッチング機能を追加"</div>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card warning" style="margin-top: 16px;">
+                <h5>⚠️ 注意点</h5>
+                <ul>
+                    <li><strong>コンフリクトに注意</strong> - 2つのPRが同じファイルを変更している場合、マージ時にコンフリクトが発生する可能性がある</li>
+                    <li><strong>順番にマージ</strong> - 1つ目のPRをマージしてから、2つ目のPRをマージする（mainを最新にしてから）</li>
+                    <li><strong>レビュー順序</strong> - 優先度の高いPRからレビューする</li>
+                </ul>
+            </div>
+
+            <div class="card success" style="margin-top: 16px;">
+                <h5>✅ 3人のチーム開発のまとめ</h5>
+                <p>どのケースでも、<strong>基本的なフローは同じ</strong>です：</p>
+                <ol>
+                    <li>開発者がブランチを作成して実装</li>
+                    <li>Pull Requestを作成</li>
+                    <li>レビュワーがローカルで検証してレビュー</li>
+                    <li>承認後にマージ</li>
+                    <li>デプロイ</li>
+                </ol>
+                <p>チームの規模や要件に応じて、<strong>レビュワーの人数やレビューの段階</strong>を調整しましょう。</p>
             </div>
         </section>
 

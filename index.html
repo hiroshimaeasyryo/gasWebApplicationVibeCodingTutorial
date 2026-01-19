@@ -121,7 +121,7 @@
                 </ul>
             </div>
 
-            <p>一方Webアプリは、<span class="highlight">ブラウザでアクセスできる「専用の画面」を持ったアプリケーション</span>です。GoogleやAmazonのような大規模なものから、社内の勤怠管理システムまで、すべてWebアプリです。</p>
+            <p>一方Webアプリは、<span class="highlight">ブラウザでアクセスできる「専用の画面」を持ったアプリケーション</span>です。モバイルアプリやPCの専用ソフトと異なり、あらゆるOS/デバイスからWebブラウザを通してアクセスできます。</p>
 
             <div class="comparison">
                 <div class="comparison-item before">
@@ -313,7 +313,7 @@ document.querySelector('.like-btn').addEventListener('click', function() {
                 <div class="tool-icon">🐍</div>
                 <div>
                     <h4>Python</h4>
-                    <p>データ分析、AI、自動化（ExcelのVBAに近い用途も）</p>
+                    <p>データ分析、AI、自動化</p>
                 </div>
             </div>
 
@@ -607,7 +607,7 @@ function sendLike(targetUserId) {
 
             <h3 id="section3-1"><span class="material-icons">folder</span>3.1. 広義のデータベース</h3>
             
-            <p>広い意味では、<span class="highlight">データが整理されて保存されているもの</span>はすべてデータベースです。</p>
+            <p>広い意味では、<span class="highlight">データが保存されているもの</span>はデータベースと一般的に呼ばれています。</p>
 
             <div class="card info">
                 <h4>データベースの例</h4>
@@ -619,8 +619,8 @@ function sendLike(targetUserId) {
                 </ul>
             </div>
 
-            <p>私たちのような<strong>小規模事業者</strong>は、高価なデータベースシステムを導入する代わりに、<span class="highlight">スプレッドシートをデータベースとして使います</span>。</p>
-
+            <p>私たちのような<strong>小規模事業者</strong>は、高価なデータベースシステムを導入する代わりに、<span class="highlight">スプレッドシートをデータベースのようなものとして使おうとしています</span>。</p>
+            <p>正しくデータ構造を理解し、適切に整理すればスプレッドシートでもデータベースのようなものを作ることはできます。</p>
             <div class="card">
                 <h4>マッチングアプリのスプレッドシート構成例</h4>
                 <div class="table-schema">
@@ -641,16 +641,17 @@ function sendLike(targetUserId) {
                 </div>
             </div>
 
-            <p>これで立派な<span class="highlight">リレーショナルデータベース的な運用</span>ができます。</p>
+            <p>これでとりあえず<span class="highlight">リレーショナルデータベース的な運用</span>ができます。</p>
 
             <div class="card warning">
                 <h4>⚠️ スプレッドシートの限界</h4>
                 <ul>
-                    <li>同時アクセスが多いと遅くなる（100人以上が同時利用すると厳しい）</li>
+                    <li>データを整理し、構造化するのが難しい</li>
+                    <li>データの整合性を保つのが難しい</li>
                     <li>データ量が多すぎると重くなる（数万行が限界）</li>
                     <li>複雑な検索は苦手（JOIN処理など）</li>
                 </ul>
-                <p><strong>でも、社内の数十人〜数百人規模なら十分実用的です。</strong></p>
+                <p><strong>スプレッドシートをデータベース代わりに使用しようとしても、あくまでもただの「データの集合」に過ぎない。</strong></p>
             </div>
 
             <h3 id="section3-2"><span class="material-icons">dns</span>3.2. 狭義のデータベース</h3>
@@ -715,7 +716,8 @@ function sendLike(targetUserId) {
             </div>
 
             <div class="card success">
-                <p>実は、皆さんがスプレッドシートでやっていたことは<strong>RDBMSの真似事</strong>だったんです！</p>
+                <p>RDBMSのようなテーブル構造の表を用意して<strong>RDBMSの真似事</strong>はできます。</p>
+                <p>ただしRDBMSのようにリレーションシップを持たせるためには、<strong>コーディングロジックでそれをカバー</strong>する必要があります。それにも限界はあります。</p>
             </div>
 
             <h4>マッチングアプリで学ぶRDBの構造</h4>
